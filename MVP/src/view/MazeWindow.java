@@ -51,52 +51,13 @@ public class MazeWindow extends BasicWindow {
 		
 		maze.redraw();
 	}
-	private void drawRectangles(Event e) {
-
-        GC gc = e.gc;
-
-        
-        Color c1 = new Color(e.display, 50, 50, 200);
-        gc.setBackground(c1);
-        gc.fillRectangle(5, 5, 90, 90);
-
-        Color c2 = new Color(e.display, 105, 90, 60);
-        gc.setBackground(c2);
-        gc.fillRectangle(130, 15, 90, 60);
-
-        Color c3 = new Color(e.display, 33, 200, 100);
-        gc.setBackground(c3);
-        gc.fillRectangle(250, 15, 90, 60);
-
-        c1.dispose();
-        c2.dispose();
-        c3.dispose();
-    }
-
+	
 	@Override
 	void initWidgets() {
 		shell.setLayout(new GridLayout(2, false));
 		shell.setText("Game Window");
 
-		Button paintButton = new Button(shell, SWT.BORDER);
-		paintButton.setText("tamir");
-		paintButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-		paintButton.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				display.addListener(SWT.Paint,event -> drawRectangles(event));
-				
-				
-				
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+		
 		
 		
 		
@@ -180,7 +141,7 @@ public class MazeWindow extends BasicWindow {
 				generateshell.setText("mazE Generate Window");
 				generateshell.setLayout(new GridLayout(2, false));
 
-				
+				//maze = new ma
 
 				
 				Group dialogFieldsGroup = new Group(generateshell, SWT.SHADOW_ETCHED_IN);
