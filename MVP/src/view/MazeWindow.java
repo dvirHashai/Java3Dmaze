@@ -1,34 +1,21 @@
 package view;
 
 
-import java.awt.Paint;
-import java.io.DataInputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -133,78 +120,50 @@ public class MazeWindow extends BasicWindow {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				Shell generateshell=new Shell(shell, SWT.TITLE|SWT.SYSTEM_MODAL| SWT.CLOSE | SWT.MAX);
-				generateshell.setLayout(new GridLayout(2,false));
-				generateshell.setSize(500, 200);
-				
-				
-				generateshell.setText("mazE Generate Window");
-				generateshell.setLayout(new GridLayout(2, false));
-
-				//maze = new ma
-
-				
-				Group dialogFieldsGroup = new Group(generateshell, SWT.SHADOW_ETCHED_IN);
-				dialogFieldsGroup.setText("Maze Generate Window" + " Properties");
-				dialogFieldsGroup.setLayout(new GridLayout(2, true));
-				dialogFieldsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-				
-				Label nameLabel=new Label(dialogFieldsGroup, SWT.NONE);
-				nameLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1));
-				nameLabel.setText("maze name :");
-				Text nameText=new Text(dialogFieldsGroup, SWT.None);
-				nameText.setLayoutData(new GridData(SWT.NONE, SWT.TOP, false, true, 1, 1));
-				
-				Label dimensionLabel=new Label(dialogFieldsGroup, SWT.NONE);
-				dimensionLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1));
-				dimensionLabel.setText("dimension :");
-				Text heightText=new Text(dialogFieldsGroup, SWT.None);
-				heightText.setLayoutData(new GridData(SWT.NONE, SWT.TOP, false, true, 1, 1));
-				
-				Label rowLabel=new Label(dialogFieldsGroup, SWT.NONE);
-				rowLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1));
-				rowLabel.setText("rows :");
-				Text rowText=new Text(dialogFieldsGroup, SWT.None);
-				rowText.setLayoutData(new GridData(SWT.NONE, SWT.TOP, false, true, 1, 1));
-				
-				Label columnLabel=new Label(dialogFieldsGroup, SWT.NONE);
-				columnLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1));
-				columnLabel.setText("column :");
-				Text columnText=new Text(dialogFieldsGroup, SWT.None);
-				columnText.setLayoutData(new GridData(SWT.NONE, SWT.TOP, false, true, 1, 1));
-				
-				Button generateButton=new Button(dialogFieldsGroup, SWT.PUSH);
-				generateButton.setText("Generate");
-				generateButton.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, true, 1, 1));
+				Generatewindow generatewindow = new Generatewindow(shell);
+				generatewindow.setTriggerOk(new SelectionListener() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void widgetDefaultSelected(SelectionEvent arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
                 generateButton.addSelectionListener(new SelectionListener() {
 					
 					
 					@Override
 					public void widgetSelected(SelectionEvent arg0) {
-						String[] generateline={"generate","3d","maze",nameText.getText(), heightText.getText(), columnText.getText(), rowText.getText()};
+					//	String[] generateline={"generate","3d","maze",nameText.getText(), heightText.getText(), columnText.getText(), rowText.getText()};
 						String[] regex = ("generate 3d maze [A-Za-z0-9]+ [0-9]{1,2} [0-9]{1,2} [0-9]{1,2}").split("\b");
 						commandsList.add(regex);
-						commandsList.add(generateline);
+						//commandsList.add(generateline);
 						setChanged();
 						notifyObservers(maze);
-						timer=new Timer();
+				/*		timer=new Timer();
 						task=new TimerTask() {
 							@Override
 							public void run() {
 								display.syncExec(new Runnable() {
 									@Override
 									public void run() {
-										paintConsole();
+										//paintConsole();
 										
 										
 									}
 								});
 							}
 						};				
-						timer.scheduleAtFixedRate(task, 0, 100);
+						timer.scheduleAtFixedRate(task, 0, 100);*/
 					
 						
-						generateshell.close();
+						//generateshell.close();
 			}
 
 					@Override
@@ -213,8 +172,7 @@ public class MazeWindow extends BasicWindow {
 						
 					}
 				});
-				generateshell.setSize (300, 200);
-				generateshell.open ();
+			
 				
 			
 				

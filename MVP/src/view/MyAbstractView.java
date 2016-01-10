@@ -16,7 +16,6 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 	protected MazeWindow mazeWindow;
 	
 	public MyAbstractView() {
-
 	}
 
 	@Override
@@ -24,8 +23,8 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 		if (mazeDisplayer == null)
 			mazeDisplayer = mazeWindow.getMaze();
 		
-		mazeDisplayer.setMaze(arg);
-		mazeWindow.paintConsole();
+		mazeDisplayer.setMaze((Maze3d)arg);
+		//mazeWindow.paintConsole();
 	}
 	
 	

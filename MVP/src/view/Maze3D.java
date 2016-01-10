@@ -1,5 +1,7 @@
 package view;
 
+import java.util.Observable;
+
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
@@ -165,5 +167,6 @@ public class Maze3D extends MazeDisplayer {
 		this.Column = p.getColumns();
 		moveCharacter(dimension, Column, row);
 	}
+
 
 }
