@@ -1,7 +1,5 @@
 package view;
 
-import java.util.Observable;
-
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
@@ -11,13 +9,14 @@ import algorithms.mazeGenerator.Maze3d;
 import algorithms.mazeGenerator.Position;
 
 public class Maze3D extends MazeDisplayer {
-
-	public int characterX = 0;// Start
-	public int characterY = 2;
-	public int exitX = 0;// goal
-	public int exitY = 2;
-
-	private void paintCube(double[] p, double h, PaintEvent e) {
+	public Position startPosition = maze.getStartPosition();
+	public Position goalPosition = maze.getGoalPosition();
+	public Position curentPosition = startPosition;
+	
+	
+	
+	
+	public void paintCube(double[] p, double h, PaintEvent e) {
 		int[] f = new int[p.length];
 		for (int k = 0; k < f.length; f[k] = (int) Math.round(p[k]), k++)
 			;
@@ -41,13 +40,17 @@ public class Maze3D extends MazeDisplayer {
 		super(parent, style);
 		
 		final Color white = new Color(null, 255, 255, 255);
-		final Color black = new Color(null, 150, 150, 150);
+		//final Color black = new Color(null, 150, 150, 150);
 		setBackground(white);
-		
+
 		addPaintListener(new PaintListener() {
 
 			@Override
 			public void paintControl(PaintEvent e) {
+				
+				try {
+					if(maze != null){
+				
 				System.out.println("ss");
 				e.gc.setForeground(new Color(null, 0, 0, 0));
 				e.gc.setBackground(new Color(null, 0, 0, 0));
@@ -57,20 +60,20 @@ public class Maze3D extends MazeDisplayer {
 
 				int mx = width / 2;
 
-				double w = (double) width / maze.getMaze3d()[0][0].length;
-				double h = (double) height / maze.getMaze3d()[0].length;
+				double w = (double) width / maze.getMaze3d()[1][1].length;
+				double h = (double) height / maze.getMaze3d()[1].length;
 
-				for (int i = 0; i < maze.getMaze3d()[0].length; i++) {
-					double w0 = 0.7 * w + 0.3 * w * i / maze.getMaze3d()[0].length;
-					double w1 = 0.7 * w + 0.3 * w * (i + 1) / maze.getMaze3d()[0].length;
-					double start = mx - w0 * maze.getMaze3d()[0][i].length / 2;
-					double start1 = mx - w1 * maze.getMaze3d()[0][i].length / 2;
-					for (int j = 0; j < maze.getMaze3d()[0][i].length; j++) {
+				for (int i = 1; i < maze.getMaze3d()[curentPosition.getDimension()][i].length; i++) {
+					double w0 = 0.7 * w + 0.3 * w * i / maze.getMaze3d()[1].length;
+					double w1 = 0.7 * w + 0.3 * w * (i + 1) / maze.getMaze3d()[1].length;
+					double start = mx - w0 * maze.getMaze3d()[1][i].length / 2;
+					double start1 = mx - w1 * maze.getMaze3d()[1][i].length / 2;
+					for (int j = 1; j < maze.getMaze3d()[curentPosition.getDimension()][i].length; j++) {
 						double[] dpoints = { start + j * w0, i * h, start + j * w0 + w0, i * h, start1 + j * w1 + w1,
 								i * h + h, start1 + j * w1, i * h + h };
 						double cheight = h / 2;
 						
-						if (maze.getMaze3d()[dimension][i][j] != 0)
+						if (maze.getMaze3d()[1][i][j] != 0)
 							paintCube(dpoints, cheight, e);
 
 						if (i == row && j == Column) {
@@ -86,11 +89,17 @@ public class Maze3D extends MazeDisplayer {
 						
 					}
 				}
+					}
+				
+		}catch (Exception e2) {
 				
 			}
-		});
-	}
-
+		}
+		
+});	
+	}	
+	
+	
 	private void moveCharacter(int x, int y, int z) {
 		if (x >= 0 && x < maze.getMaze3d().length && y >= 0 && y < maze.getMaze3d()[0][0].length && z >= 0
 				&& z < maze.getMaze3d()[0].length && maze.getMaze3d()[x][y][z] == 0) {
@@ -166,6 +175,18 @@ public class Maze3D extends MazeDisplayer {
 		this.row = p.getRows();
 		this.Column = p.getColumns();
 		moveCharacter(dimension, Column, row);
+	}
+
+	@Override
+	public void upFloor() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void downFloor() {
+		// TODO Auto-generated method stub
+		
 	}
 
 

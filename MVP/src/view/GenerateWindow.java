@@ -10,11 +10,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-public class Generatewindow {
+public class GenerateWindow {
 
 	private Button generateButton;
-	public Generatewindow(Shell shell) {
-		Shell generateshell = new Shell(shell, SWT.TITLE | SWT.SYSTEM_MODAL | SWT.CLOSE | SWT.MAX);
+	Shell generateshell;
+	Text nameText,heightText,rowText,columnText;
+	public GenerateWindow(Shell shell) {
+		generateshell = new Shell(shell, SWT.TITLE | SWT.SYSTEM_MODAL | SWT.CLOSE | SWT.MAX);
 		generateshell.setLayout(new GridLayout(2, false));
 		generateshell.setSize(500, 200);
 
@@ -29,25 +31,25 @@ public class Generatewindow {
 		Label nameLabel = new Label(dialogFieldsGroup, SWT.NONE);
 		nameLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1));
 		nameLabel.setText("maze name :");
-		Text nameText = new Text(dialogFieldsGroup, SWT.None);
+		nameText = new Text(dialogFieldsGroup, SWT.None);
 		nameText.setLayoutData(new GridData(SWT.NONE, SWT.TOP, false, true, 1, 1));
 
 		Label dimensionLabel = new Label(dialogFieldsGroup, SWT.NONE);
 		dimensionLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1));
 		dimensionLabel.setText("dimension :");
-		Text heightText = new Text(dialogFieldsGroup, SWT.None);
+		heightText = new Text(dialogFieldsGroup, SWT.None);
 		heightText.setLayoutData(new GridData(SWT.NONE, SWT.TOP, false, true, 1, 1));
 
 		Label rowLabel = new Label(dialogFieldsGroup, SWT.NONE);
 		rowLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1));
 		rowLabel.setText("rows :");
-		Text rowText = new Text(dialogFieldsGroup, SWT.None);
+		rowText = new Text(dialogFieldsGroup, SWT.None);
 		rowText.setLayoutData(new GridData(SWT.NONE, SWT.TOP, false, true, 1, 1));
 
 		Label columnLabel = new Label(dialogFieldsGroup, SWT.NONE);
 		columnLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, true, 1, 1));
 		columnLabel.setText("column :");
-		Text columnText = new Text(dialogFieldsGroup, SWT.None);
+		columnText = new Text(dialogFieldsGroup, SWT.None);
 		columnText.setLayoutData(new GridData(SWT.NONE, SWT.TOP, false, true, 1, 1));
 
 		generateButton = new Button(dialogFieldsGroup, SWT.PUSH);
@@ -60,5 +62,7 @@ public class Generatewindow {
 	public void setTriggerOk(SelectionListener listener)
 	{
 		generateButton.addSelectionListener(listener);
+		
 	}
+
 }

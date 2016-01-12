@@ -3,8 +3,6 @@ package view;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.eclipse.swt.SWT;
-
 import algorithms.mazeGenerator.Maze3d;
 
 public abstract class MyAbstractView extends Observable implements View, Observer {
@@ -18,17 +16,6 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 	public MyAbstractView() {
 	}
 
-	@Override
-	public void DisplySolution(Object arg) {
-		if (mazeDisplayer == null)
-			mazeDisplayer = mazeWindow.getMaze();
-		
-		mazeDisplayer.setMaze((Maze3d)arg);
-		//mazeWindow.paintConsole();
-	}
-	
-	
-	
 	public void setBasicWindow(MazeWindow mazeWindow) {
 		this.mazeWindow = mazeWindow;
 	}
@@ -111,6 +98,17 @@ public abstract class MyAbstractView extends Observable implements View, Observe
             notifyObservers();
 		}
 
+	}
+	
+
+	@Override
+	public void DisplySolution(Object arg) {
+/*		if (mazeDisplayer == null)
+			mazeDisplayer = new Maze3D(mazeWindow.shell, SWT.BORDER);*/
+		    //mazeDisplayer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		mazeWindow.mazePainter.setMaze((Maze3d)arg);
+		
+		//mazeWindow.paintConsole();
 	}
 
 	

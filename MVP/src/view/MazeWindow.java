@@ -1,53 +1,48 @@
 package view;
 
-
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 
 public class MazeWindow extends BasicWindow {
+	KeyListener keyListener;
+	MazeDisplayer mazePainter;
+	GenerateWindow generatewindow;
 
-	MazeDisplayer maze;
 	public MazeDisplayer getMaze() {
-		return maze;
+		return mazePainter;
 	}
 
 	Timer timer;
 	TimerTask task;
-	
+
 	public MazeWindow(String title, int width, int height) {
 		super(title, width, height);
-		
+
 	}
 
-	public void paintConsole(){
-		
-		maze.redraw();
+	public void paintConsole() {
+
+		mazePainter.redraw();
 	}
-	
+
 	@Override
 	void initWidgets() {
 		shell.setLayout(new GridLayout(2, false));
 		shell.setText("Game Window");
 
-		
-		
-		
-		
 		// Bar menu
 		Menu menuButton = new Menu(shell, SWT.BAR);
 		shell.setMenuBar(menuButton);
@@ -113,104 +108,88 @@ public class MazeWindow extends BasicWindow {
 		});
 
 		Button generateButton = new Button(shell, SWT.PUSH);
-	    generateButton.setText("Generate");
-	    generateButton.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false, 1, 1));
-		
-	        generateButton.addSelectionListener(new SelectionListener() {
-			
+		generateButton.setText("Generate");
+		generateButton.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false, 1, 1));
+
+		generateButton.addSelectionListener(new SelectionListener() {
+
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				Generatewindow generatewindow = new Generatewindow(shell);
+				generatewindow = new GenerateWindow(shell);
 				generatewindow.setTriggerOk(new SelectionListener() {
-					
+
 					@Override
 					public void widgetSelected(SelectionEvent arg0) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void widgetDefaultSelected(SelectionEvent arg0) {
-						// TODO Auto-generated method stub
-						
-					}
-				});
-                generateButton.addSelectionListener(new SelectionListener() {
-					
-					
-					@Override
-					public void widgetSelected(SelectionEvent arg0) {
-					//	String[] generateline={"generate","3d","maze",nameText.getText(), heightText.getText(), columnText.getText(), rowText.getText()};
+						String[] generateline = { "generate", "3d", "maze", generatewindow.nameText.getText(),
+								generatewindow.heightText.getText(), generatewindow.rowText.getText(),
+								generatewindow.columnText.getText() };
 						String[] regex = ("generate 3d maze [A-Za-z0-9]+ [0-9]{1,2} [0-9]{1,2} [0-9]{1,2}").split("\b");
 						commandsList.add(regex);
-						//commandsList.add(generateline);
+						commandsList.add(generateline);
 						setChanged();
-						notifyObservers(maze);
-				/*		timer=new Timer();
-						task=new TimerTask() {
+						notifyObservers();
+						generatewindow.generateshell.close();
+						timer = new Timer();
+						task = new TimerTask() {
 							@Override
 							public void run() {
 								display.syncExec(new Runnable() {
 									@Override
 									public void run() {
-										//paintConsole();
-										
-										
+										mazePainter.redraw();
 									}
 								});
 							}
-						};				
-						timer.scheduleAtFixedRate(task, 0, 100);*/
-					
-						
-						//generateshell.close();
-			}
+						};
+						timer.scheduleAtFixedRate(task, 0, 1000);
+
+					}
 
 					@Override
 					public void widgetDefaultSelected(SelectionEvent arg0) {
 						// TODO Auto-generated method stub
-						
+
 					}
+
 				});
-			
-				
-			
-				
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
-				
-				
+
 			}
 		});
-		
+		mazePainter = new Maze2D(shell, SWT.BORDER | SWT.DOUBLE_BUFFERED);
+		mazePainter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
+		mazePainter.key(new KeyListener() {
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.keyCode == SWT.ARROW_UP)
+					mazePainter.moveUp();
+				if (e.keyCode == SWT.ARROW_DOWN)
+					mazePainter.moveDown();
+				if (e.keyCode == SWT.ARROW_LEFT)
+					mazePainter.moveLeft();
+				if (e.keyCode == SWT.ARROW_RIGHT)
+					mazePainter.moveRight();
+				if (e.keyCode == SWT.PAGE_UP)
+					mazePainter.moveLeft();
+				if (e.keyCode == SWT.PAGE_DOWN)
+					mazePainter.moveLeft();
+			}
+		});
+		// mazePainter.setMaze(maze3d);
 		shell.setSize(800, 600);
 		shell.open();
 
-		/*
-		 * final Image image = new Image (display, 20, 20); Color color =
-		 * display.getSystemColor (SWT.COLOR_RED); GC gc = new GC (image);
-		 * gc.setBackground (color); gc.fillRectangle (image.getBounds ());
-		 * gc.dispose ();
-		 * 
-		 * 
-		 * shell.setLayout (new FillLayout ()); Group group = new Group (shell,
-		 * SWT.NONE); group.setLayout (new FillLayout ()); group.setText (
-		 * "a square"); Canvas canvas = new Canvas (group, SWT.NONE);
-		 * canvas.addPaintListener (new PaintListener () {
-		 * 
-		 * @Override public void paintControl (PaintEvent e) { e.gc.drawImage
-		 * (image, 50, 50); } });
-		 * 
-		 * shell.pack (); shell.open (); while (!shell.isDisposed ()) { if
-		 * (!display.readAndDispatch ()) display.sleep (); } image.dispose ();
-		 * display.dispose ();
-		 */
+	
 	}
-
-
-
-
 
 }

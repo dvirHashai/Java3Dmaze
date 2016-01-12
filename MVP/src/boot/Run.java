@@ -6,10 +6,7 @@ import java.io.PrintWriter;
 
 import model.MyModel;
 import presenter.MyPresenter;
-import view.BasicWindow;
 import view.CLI;
-import view.Maze3D;
-import view.MazeDisplayer;
 import view.MazeWindow;
 import view.MyView;
 

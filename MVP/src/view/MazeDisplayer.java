@@ -1,44 +1,76 @@
 package view;
 
-import java.util.Observer;
-
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
 import algorithms.mazeGenerator.Maze3d;
+import algorithms.mazeGenerator.Position;
 
 
 // this is (1) the common type, and (2) a type of widget
 // (1) we can switch among different MazeDisplayers
 // (2) other programmers can use it naturally
 public abstract class MazeDisplayer extends Canvas {
+	Position startPosition ;
+	Position goalPosition ;
+	Position curentPosition ;
 	Maze3d maze;
 	int dimension,row,Column;
 	// just as a stub...
-	/*int[][] mazeData={
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-			{1,0,0,0,0,0,0,0,1,1,0,1,0,0,1},
-			{0,0,1,1,1,1,1,0,0,1,0,1,0,1,1},
-			{1,1,1,0,0,0,1,0,1,1,0,1,0,0,1},
-			{1,0,1,0,1,1,1,0,0,0,0,1,1,0,1},
-			{1,1,0,0,0,1,0,0,1,1,1,1,0,0,1},
-			{1,0,0,1,0,0,1,0,0,0,0,1,0,1,1},
-			{1,0,1,1,0,1,1,0,1,1,0,0,0,1,1},
-			{1,0,0,0,0,0,0,0,0,1,0,1,0,0,1},
-			{1,1,1,1,1,1,1,1,1,1,1,1,0,1,1},
-		};*/
+	int[][][] mazeData={
+			
+			{
+				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+				{1,1,0,0,0,0,0,0,0,1,1,0,1,0,0,1,1},
+				{1,0,0,1,1,1,1,1,0,0,1,0,1,0,1,1,1},
+				{1,1,1,1,0,0,0,1,0,1,1,0,1,0,0,1,1},
+				{1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,1,1},
+				{1,1,1,0,0,0,1,0,0,1,1,1,1,0,0,1,1},
+				{1,1,0,0,1,0,0,1,0,0,0,0,1,0,1,1,1},
+				{1,1,0,1,1,0,1,1,0,1,1,0,0,0,1,1,1},
+				{1,1,0,0,0,0,0,0,0,0,1,0,1,0,0,1,1},
+				{1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1},
+				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		},
+			{
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+			{1,1,0,0,0,0,0,0,0,1,1,0,1,0,0,1,1},
+			{1,0,0,1,1,1,1,1,0,0,1,0,1,0,1,1,1},
+			{1,1,1,1,0,0,0,1,0,1,1,0,1,0,0,1,1},
+			{1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,1,1},
+			{1,1,1,0,0,0,1,0,0,1,1,1,1,0,0,1,1},
+			{1,1,0,0,1,0,0,1,0,0,0,0,1,0,1,1,1},
+			{1,1,0,1,1,0,1,1,0,1,1,0,0,0,1,1,1},
+			{1,1,0,0,0,0,0,0,0,0,1,0,1,0,0,1,1},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		},
+			{
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+			{1,1,0,0,0,0,0,0,0,1,1,0,1,0,0,1,1},
+			{1,0,0,1,1,1,1,1,0,0,1,0,1,0,1,1,1},
+			{1,1,1,1,0,0,0,1,0,1,1,0,1,0,0,1,1},
+			{1,1,0,1,0,1,1,1,0,0,0,0,1,1,0,1,1},
+			{1,1,1,0,0,0,1,0,0,1,1,1,1,0,0,1,1},
+			{1,1,0,0,1,0,0,1,0,0,0,0,1,0,1,1,1},
+			{1,1,0,1,1,0,1,1,0,1,1,0,0,0,1,1,1},
+			{1,1,0,0,0,0,0,0,0,0,1,0,1,0,0,1,1},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		}
+	};
 
 	
 	public MazeDisplayer(Composite parent, int style) {
 		super(parent, style);
-		//setMaze(new Maze3d(1, 10, 10));
-		
-		
-		
+		new Maze3d(1, 10, 10);
+	
 	}
-	
 
-	
 	public void setMaze(Maze3d mazeData){
 		
 		
@@ -46,21 +78,15 @@ public abstract class MazeDisplayer extends Canvas {
 		this.dimension = maze.getDimension();
 		this.row = maze.getRow();
 		this.Column = maze.getColumn();
+		startPosition = maze.getStartPosition();
+		goalPosition = maze.getGoalPosition();
+		curentPosition = maze.getStartPosition();
+
 		System.out.println(maze.toString());
-		getDisplay().syncExec(new Runnable() {
-        
-			@Override
-			public void run() {
-				redraw();
-				
-			}
-		});
 	}
-	/*public void setMazeData(int[][] mazeData){
-		this.mazeData=mazeData;
-		
-	}*/
-	
+	public void key(KeyListener keyListener){
+		addKeyListener(keyListener);
+	}
 	public abstract  void setCharacterPosition(Maze3d maze);
 
 	public abstract void moveUp();
@@ -70,5 +96,9 @@ public abstract class MazeDisplayer extends Canvas {
 	public abstract  void moveLeft();
 
 	public  abstract void moveRight();
+
+	public abstract void upFloor();
+
+	public abstract void downFloor();
 
 }
