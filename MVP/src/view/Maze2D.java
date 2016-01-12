@@ -42,8 +42,9 @@ public class Maze2D extends MazeDisplayer {
 					              e.gc.fillRectangle(x,y,w,h);
 					          if (i == curentPosition.getRows() && j == curentPosition.getColumns()) {
 					        	  e.gc.setAlpha(255);
-					        		e.gc.drawImage(charecter, 0, 0, charecter.getBounds().width, charecter.getBounds().height, x, y,
-					        				w,h);		
+					        		e.gc.drawImage(charecter, 0, 0, charecter.getBounds().width, charecter.getBounds().height, x, y,w,h);
+					        		System.out.println(curentPosition);
+					        		//e.gc.drawImage(image, srcX, srcY, srcWidth, srcHeight, destX, destY, destWidth, destHeight);
 								}
 					       /*   if ( curentPosition== curentPosition) {
 					        	  e.gc.setAlpha(255);
@@ -60,16 +61,13 @@ public class Maze2D extends MazeDisplayer {
 			});
 	 }
 
-	private void moveCharacter(int x, int y, int z) {
-		if (x > 0 && x < maze.getMaze3d().length && y > 0 && y < maze.getMaze3d()[0][0].length && z > 0
-				&& z < maze.getMaze3d()[0].length && maze.getMaze3d()[x][y][z] == 0) {
-			dimension = x;
-			row = y;
-			Column = z;
-			redraw();
+	private void moveCharacter(Position move) {
+		
+			
+		
 			
 			
-		}
+		
 	}
 	/*
 	 * (non-Javadoc)
@@ -77,74 +75,87 @@ public class Maze2D extends MazeDisplayer {
 	 * @see view.MazeDisplayer#moveUp()
 	 */
 	@Override
-	public void moveUp() {
-		int y = row;
-		int z = Column;
-		y = y - 1;
-		moveCharacter(dimension, y, z);
+	public void moveCharacterUp() {
+	checker = curentPosition;
+	System.out.println(curentPosition+"1");
+	if(	maze.PossibleMoves(checker).contains(Position.MergerPos(checker, Position.BACKWARD))){	
+		Position.MergerPos(curentPosition, Position.BACKWARD);
+		System.out.println(curentPosition+"2");
+		redraw();
+	}
+		//moveCharacter(checker);
 	}
 
-	/*
-	 * (non-Javadoc)
+	
+	/* (non-Javadoc)
 	 * 
 	 * @see view.MazeDisplayer#moveDown()
 	 */
 	@Override
-	public void moveDown() {
-		int y = row;
-		int z = Column;
-		y = y + 1;
-		moveCharacter(dimension, y, z);
+	public void moveCharacterDown() {
+		checker = curentPosition;
+		
+		if(	maze.PossibleMoves(checker).contains(Position.MergerPos(checker, Position.FORWARD))){
+			Position.MergerPos(curentPosition, Position.FORWARD);
+			redraw();
+		}
+			//moveCharacter(checker);
 	}
 
-	/*
-	 * (non-Javadoc)
+	
+	/*  (non-Javadoc)
 	 * 
 	 * @see view.MazeDisplayer#moveLeft()
 	 */
 	@Override
-	public void moveLeft() {
-		int y = row;
-		int z = Column;
-		z = z - 1;
-		moveCharacter(dimension, y, z);
+	public void moveCharacterLeft() {
+		checker = curentPosition;
+		if(	maze.PossibleMoves(checker).contains(Position.MergerPos(checker, Position.RIGHT))){
+			Position.MergerPos(curentPosition, Position.RIGHT);
+			redraw();
+		}
+		//moveCharacter(dimension, y, z);
 	}
 
-	/*
-	 * (non-Javadoc)
+	
+	/*  (non-Javadoc)
 	 * 
 	 * @see view.MazeDisplayer#moveRight()
 	 */
 	@Override
-	public void moveRight() {
-		int y = row;
-		int z = Column;
-		z = z + 1;
-		moveCharacter(dimension, y, z);
+	public void moveCharacterRight() {
+		checker = curentPosition;
+		if(	maze.PossibleMoves(checker).contains(Position.MergerPos(checker, Position.LEFT))){
+			Position.MergerPos(curentPosition, Position.LEFT);
+			redraw();
+		}
+		//moveCharacter(dimension, y, z);
 	}
 	@Override
-	public void upFloor() {
-		int x = dimension;
-		int y = row;
-		int z = Column;
-		x = x + 1;
-		moveCharacter(x, y, z);
+	public void moveCharacterUpFloor() {
+		checker = curentPosition;
+		if(	maze.PossibleMoves(checker).contains(Position.MergerPos(checker, Position.UP))){
+			Position.MergerPos(curentPosition, Position.UP);
+			redraw();
+		}
+		//moveCharacter(x, y, z);
 	}
 	@Override
-	public void downFloor() {
-		int x = dimension;
-		int y = row;
-		int z = Column;
-		x = x - 1;
-		moveCharacter(x, y, z);
+	public void moveCharacterDownFloor() {
+		checker = curentPosition;
+		if(	maze.PossibleMoves(checker).contains(Position.MergerPos(checker, Position.DOWN))){
+			Position.MergerPos(curentPosition, Position.DOWN);
+			redraw();
+		}
+		//moveCharacter(x, y, z);
 	}
 
 	@Override
 	public void setCharacterPosition(Maze3d maze) {
 		Position p = maze.getStartPosition();
-		this.dimension = p.getDimension();
-		this.row = p.getRows();
-		this.Column = p.getColumns();
-		moveCharacter(dimension, Column, row);
+		p.setRows(startPosition.getColumns()+1);
+		moveCharacter(p);
 	}
+
+
 }

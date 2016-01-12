@@ -1,5 +1,6 @@
 package view;
 
+import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
@@ -15,6 +16,7 @@ public abstract class MazeDisplayer extends Canvas {
 	Position startPosition ;
 	Position goalPosition ;
 	Position curentPosition ;
+	Position checker;
 	Maze3d maze;
 	int dimension,row,Column;
 	// just as a stub...
@@ -85,20 +87,22 @@ public abstract class MazeDisplayer extends Canvas {
 		System.out.println(maze.toString());
 	}
 	public void key(KeyListener keyListener){
-		addKeyListener(keyListener);
+		addKeyListener(new KeyAdapter() {
+			
+		});
 	}
 	public abstract  void setCharacterPosition(Maze3d maze);
 
-	public abstract void moveUp();
+	public abstract void moveCharacterUp();
 
-	public abstract  void moveDown();
+	public abstract  void moveCharacterDown();
 
-	public abstract  void moveLeft();
+	public abstract  void moveCharacterLeft();
 
-	public  abstract void moveRight();
+	public  abstract void moveCharacterRight();
 
-	public abstract void upFloor();
+	public abstract void moveCharacterUpFloor();
 
-	public abstract void downFloor();
+	public abstract void moveCharacterDownFloor();
 
 }

@@ -128,23 +128,26 @@ public class MazeWindow extends BasicWindow {
 						commandsList.add(generateline);
 						setChanged();
 						notifyObservers();
+						commandsList.clear();
 						generatewindow.generateshell.close();
 						timer = new Timer();
 						task = new TimerTask() {
 							@Override
 							public void run() {
-								display.syncExec(new Runnable() {
+								display.asyncExec(new Runnable() {
 									@Override
 									public void run() {
 										mazePainter.redraw();
+										mazePainter.setFocus();
+										//mazePainter.update();
+										System.out.println("ss");
 									}
 								});
 							}
 						};
 						timer.scheduleAtFixedRate(task, 0, 1000);
-
+				
 					}
-
 					@Override
 					public void widgetDefaultSelected(SelectionEvent arg0) {
 						// TODO Auto-generated method stub
@@ -161,7 +164,9 @@ public class MazeWindow extends BasicWindow {
 		});
 		mazePainter = new Maze2D(shell, SWT.BORDER | SWT.DOUBLE_BUFFERED);
 		mazePainter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
-		mazePainter.key(new KeyListener() {
+	
+
+		mazePainter.addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -172,17 +177,18 @@ public class MazeWindow extends BasicWindow {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.keyCode == SWT.ARROW_UP)
-					mazePainter.moveUp();
+					System.out.println("IN");
+					mazePainter.moveCharacterUp();
 				if (e.keyCode == SWT.ARROW_DOWN)
-					mazePainter.moveDown();
+					mazePainter.moveCharacterDown();
 				if (e.keyCode == SWT.ARROW_LEFT)
-					mazePainter.moveLeft();
+					mazePainter.moveCharacterLeft();
 				if (e.keyCode == SWT.ARROW_RIGHT)
-					mazePainter.moveRight();
+					mazePainter.moveCharacterRight();
 				if (e.keyCode == SWT.PAGE_UP)
-					mazePainter.moveLeft();
+					mazePainter.moveCharacterUpFloor();
 				if (e.keyCode == SWT.PAGE_DOWN)
-					mazePainter.moveLeft();
+					mazePainter.moveCharacterDownFloor();
 			}
 		});
 		// mazePainter.setMaze(maze3d);

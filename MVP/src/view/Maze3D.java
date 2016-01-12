@@ -1,4 +1,4 @@
-package view;
+/*package view;
 
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -116,11 +116,11 @@ public class Maze3D extends MazeDisplayer {
 		}
 	}
 
-	/*
+	
 	 * (non-Javadoc)
 	 * 
 	 * @see view.MazeDisplayer#moveUp()
-	 */
+	 
 	@Override
 	public void moveUp() {
 		int y = row;
@@ -129,11 +129,11 @@ public class Maze3D extends MazeDisplayer {
 		moveCharacter(dimension, y, z);
 	}
 
-	/*
+	
 	 * (non-Javadoc)
 	 * 
 	 * @see view.MazeDisplayer#moveDown()
-	 */
+	 
 	@Override
 	public void moveDown() {
 		int y = row;
@@ -142,11 +142,11 @@ public class Maze3D extends MazeDisplayer {
 		moveCharacter(dimension, y, z);
 	}
 
-	/*
+	
 	 * (non-Javadoc)
 	 * 
 	 * @see view.MazeDisplayer#moveLeft()
-	 */
+	 
 	@Override
 	public void moveLeft() {
 		int y = row;
@@ -155,11 +155,11 @@ public class Maze3D extends MazeDisplayer {
 		moveCharacter(dimension, y, z);
 	}
 
-	/*
+	
 	 * (non-Javadoc)
 	 * 
 	 * @see view.MazeDisplayer#moveRight()
-	 */
+	 
 	@Override
 	public void moveRight() {
 		int y = row;
@@ -190,4 +190,4 @@ public class Maze3D extends MazeDisplayer {
 	}
 
 
-}
+}*/
