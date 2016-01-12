@@ -140,7 +140,7 @@ public class MazeWindow extends BasicWindow {
 										mazePainter.redraw();
 										mazePainter.setFocus();
 										//mazePainter.update();
-										System.out.println("ss");
+									
 									}
 								});
 							}
@@ -169,7 +169,7 @@ public class MazeWindow extends BasicWindow {
 		mazePainter.addKeyListener(new KeyListener() {
 
 			@Override
-			public void keyReleased(KeyEvent e) {
+			public void keyReleased(KeyEvent s) {
 				// TODO Auto-generated method stub
 
 			}
@@ -177,7 +177,6 @@ public class MazeWindow extends BasicWindow {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.keyCode == SWT.ARROW_UP)
-					System.out.println("IN");
 					mazePainter.moveCharacterUp();
 				if (e.keyCode == SWT.ARROW_DOWN)
 					mazePainter.moveCharacterDown();

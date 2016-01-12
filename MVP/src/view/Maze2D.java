@@ -17,17 +17,20 @@ public class Maze2D extends MazeDisplayer {
 	    	//setBackground(new Color(null, 255, 255, 255));
 	        //TODO fix the pic
 	    	Image back = new Image(getDisplay(),"back1.jpg");
-	    	Image charecter = new Image(getDisplay(),"charecter.jpg");
-	    	Image win = new Image(getDisplay(),"win.jpg");
-	    	Image sol = new Image(getDisplay(),"sol.jpg");
+	    	Image charecter = new Image(getDisplay(),"character.png");
+	    	Image win = new Image(getDisplay(),"win.png");
+	    	Image sol = new Image(getDisplay(),"sol.png");
 			setBackgroundImage(back);
+			
 	    	addPaintListener(new PaintListener() {
 				
 				@Override
 				public void paintControl(PaintEvent e) {
 					try {
 						if(maze!=null && curentPosition!=null &&startPosition!=null && goalPosition!=null){
-								
+							
+							System.out.println(goalPosition);
+							System.out.println(curentPosition);
 					   e.gc.setForeground(new Color(null,255,255,255));
 					   e.gc.setBackground(new Color(null,0,0,0));
 					   int width=getSize().x;
@@ -41,11 +44,15 @@ public class Maze2D extends MazeDisplayer {
 					          if(maze.getMaze3d()[curentPosition.getDimension()][i][j]!=0)
 					              e.gc.fillRectangle(x,y,w,h);
 					          if (i == curentPosition.getRows() && j == curentPosition.getColumns()) {
-					        	  e.gc.setAlpha(255);
+					        	 
 					        		e.gc.drawImage(charecter, 0, 0, charecter.getBounds().width, charecter.getBounds().height, x, y,w,h);
-					        		System.out.println(curentPosition);
-					        		//e.gc.drawImage(image, srcX, srcY, srcWidth, srcHeight, destX, destY, destWidth, destHeight);
+					        	
 								}
+					            
+					          if (i == goalPosition.getRows() && j == goalPosition.getColumns() && curentPosition.getDimension() == goalPosition.getDimension()){
+					        	  e.gc.drawImage(win, 0, 0, win.getBounds().width, win.getBounds().height, x, y,w,h);
+						   }
+					        	  
 					       /*   if ( curentPosition== curentPosition) {
 					        	  e.gc.setAlpha(255);
 					        		e.gc.drawImage(charecter, 0, 0, charecter.getBounds().width, charecter.getBounds().height, x, y,
@@ -79,8 +86,7 @@ public class Maze2D extends MazeDisplayer {
 	checker = curentPosition;
 	System.out.println(curentPosition+"1");
 	if(	maze.PossibleMoves(checker).contains(Position.MergerPos(checker, Position.BACKWARD))){	
-		Position.MergerPos(curentPosition, Position.BACKWARD);
-		System.out.println(curentPosition+"2");
+		curentPosition = Position.MergerPos(curentPosition, Position.BACKWARD);
 		redraw();
 	}
 		//moveCharacter(checker);
@@ -96,7 +102,8 @@ public class Maze2D extends MazeDisplayer {
 		checker = curentPosition;
 		
 		if(	maze.PossibleMoves(checker).contains(Position.MergerPos(checker, Position.FORWARD))){
-			Position.MergerPos(curentPosition, Position.FORWARD);
+			curentPosition = Position.MergerPos(curentPosition, Position.FORWARD);
+			
 			redraw();
 		}
 			//moveCharacter(checker);
@@ -110,8 +117,8 @@ public class Maze2D extends MazeDisplayer {
 	@Override
 	public void moveCharacterLeft() {
 		checker = curentPosition;
-		if(	maze.PossibleMoves(checker).contains(Position.MergerPos(checker, Position.RIGHT))){
-			Position.MergerPos(curentPosition, Position.RIGHT);
+		if(	maze.PossibleMoves(checker).contains(Position.MergerPos(checker, Position.LEFT))){
+			curentPosition = Position.MergerPos(curentPosition, Position.LEFT);
 			redraw();
 		}
 		//moveCharacter(dimension, y, z);
@@ -125,8 +132,8 @@ public class Maze2D extends MazeDisplayer {
 	@Override
 	public void moveCharacterRight() {
 		checker = curentPosition;
-		if(	maze.PossibleMoves(checker).contains(Position.MergerPos(checker, Position.LEFT))){
-			Position.MergerPos(curentPosition, Position.LEFT);
+		if(	maze.PossibleMoves(checker).contains(Position.MergerPos(checker, Position.RIGHT))){
+			curentPosition = Position.MergerPos(curentPosition, Position.RIGHT);
 			redraw();
 		}
 		//moveCharacter(dimension, y, z);
@@ -135,7 +142,7 @@ public class Maze2D extends MazeDisplayer {
 	public void moveCharacterUpFloor() {
 		checker = curentPosition;
 		if(	maze.PossibleMoves(checker).contains(Position.MergerPos(checker, Position.UP))){
-			Position.MergerPos(curentPosition, Position.UP);
+			curentPosition = Position.MergerPos(curentPosition, Position.UP);
 			redraw();
 		}
 		//moveCharacter(x, y, z);
@@ -144,7 +151,7 @@ public class Maze2D extends MazeDisplayer {
 	public void moveCharacterDownFloor() {
 		checker = curentPosition;
 		if(	maze.PossibleMoves(checker).contains(Position.MergerPos(checker, Position.DOWN))){
-			Position.MergerPos(curentPosition, Position.DOWN);
+			curentPosition = Position.MergerPos(curentPosition, Position.DOWN);
 			redraw();
 		}
 		//moveCharacter(x, y, z);
