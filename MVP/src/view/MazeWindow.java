@@ -8,6 +8,7 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -42,7 +43,7 @@ public class MazeWindow extends BasicWindow {
 	void initWidgets() {
 		shell.setLayout(new GridLayout(2, false));
 		shell.setText("Game Window");
-
+		
 		// Bar menu
 		Menu menuButton = new Menu(shell, SWT.BAR);
 		shell.setMenuBar(menuButton);
@@ -137,14 +138,22 @@ public class MazeWindow extends BasicWindow {
 								display.asyncExec(new Runnable() {
 									@Override
 									public void run() {
+										if (mazePainter.curentPosition.equals(mazePainter.goalPosition)){
+											
+											task.cancel();
+											
+										}
+										else{
 										mazePainter.redraw();
 										mazePainter.setFocus();
+										}
 										//mazePainter.update();
 									
 									}
 								});
 							}
 						};
+						
 						timer.scheduleAtFixedRate(task, 0, 1000);
 				
 					}
@@ -191,7 +200,7 @@ public class MazeWindow extends BasicWindow {
 			}
 		});
 		// mazePainter.setMaze(maze3d);
-		shell.setSize(800, 600);
+		shell.setSize(1300, 800);
 		shell.open();
 
 	

@@ -2,6 +2,7 @@ package view;
 
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
@@ -18,6 +19,7 @@ public abstract class MazeDisplayer extends Canvas {
 	Position curentPosition ;
 	Position checker;
 	Maze3d maze;
+	
 	int dimension,row,Column;
 	// just as a stub...
 	int[][][] mazeData={
@@ -105,4 +107,5 @@ public abstract class MazeDisplayer extends Canvas {
 
 	public abstract void moveCharacterDownFloor();
 
+	//public abstract void winner();
 }
