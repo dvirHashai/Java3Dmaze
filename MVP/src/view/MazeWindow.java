@@ -1,11 +1,19 @@
 package view;
 
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.swing.JFileChooser;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseWheelListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -13,15 +21,21 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+
+import algorithms.mazeGenerator.Position;
+import algorithms.search.State;
 
 public class MazeWindow extends BasicWindow {
 	KeyListener keyListener;
 	MazeDisplayer mazePainter;
 	GenerateWindow generatewindow;
-
+    MouseWheelListener mouseZoomlListener;
+	String mazeName;
+	int counter = 0;
 	public MazeDisplayer getMaze() {
 		return mazePainter;
 	}
@@ -55,9 +69,47 @@ public class MazeWindow extends BasicWindow {
 		// Drop down functions for file button
 		Menu subMenu = new Menu(shell, SWT.DROP_DOWN);
 		fileItem.setMenu(subMenu);
+        
+		
+		/*MenuItem properties = new MenuItem(subMenu, SWT.PUSH);
+		properties.setText("Open Properties");
+		// Listener for load maze
+		properties.addListener(SWT.Selection, new Listener() {
 
+			@Override
+			public void handleEvent(Event arg0) {
+				FileDialog fd = new FileDialog(shell, SWT.OPEN);
+				fd.setText("Open Properties");
+				fd.setFilterPath("");
+				String[] filterExt = { "*.txt", "*.java", "*.xml","*.maze", "*.*" };
+				fd.setFilterExtensions(filterExt);
+				String selected = fd.open();
+				int counter = 0;
+				char[] chen = selected.toCharArray();
+				for (int i = 0; i < chen.length; i++) {
+					if("c".equals(chen[i])){
+						counter++;
+					}
+					System.out.println();
+				}
+				
+					System.out.println(counter);
+				
+				
+				
+				String[] regexLine = {"load maze [^ \n]+ [A-Za-z0-9]+"};
+				commandsList.add(regexLine);
+				//commandsList.add(selected);
+				setChanged();
+				notifyObservers();
+				commandsList.clear();
+
+			}
+		});*/
+		
 		// load maze button in the sub menu
 		MenuItem LoadMaze = new MenuItem(subMenu, SWT.PUSH);
+		LoadMaze.setText("LoadMaze\tCtrl+L");
 		// Listener for load maze
 		LoadMaze.addListener(SWT.Selection, new Listener() {
 
@@ -69,6 +121,7 @@ public class MazeWindow extends BasicWindow {
 		});
 		// Save maze button in the sub menu
 		MenuItem SaveMaze = new MenuItem(subMenu, SWT.PUSH);
+		SaveMaze.setText("SaveMaze\tCtrl+S");
 		// Listener for save maze
 		SaveMaze.addListener(SWT.Selection, new Listener() {
 
@@ -78,10 +131,12 @@ public class MazeWindow extends BasicWindow {
 
 			}
 		});
-		LoadMaze.setText("LoadMaze\tCtrl+L");
-		SaveMaze.setText("SaveMaze\tCtrl+S");
-		LoadMaze.setAccelerator(SWT.MOD1 + 'A');
-		SaveMaze.setAccelerator(SWT.MOD1 + 'A');
+		
+		
+		/*LoadMaze.setAccelerator(SWT.MOD1 + 'A');
+		SaveMaze.setAccelerator(SWT.MOD1 + 'A');*/
+		
+		
 		// Help button in the bar
 		MenuItem helpItem = new MenuItem(menuButton, SWT.CASCADE);
 		helpItem.setText("&Help");
@@ -111,6 +166,8 @@ public class MazeWindow extends BasicWindow {
 		Button generateButton = new Button(shell, SWT.PUSH);
 		generateButton.setText("Generate");
 		generateButton.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false, 1, 1));
+		
+		
 
 		generateButton.addSelectionListener(new SelectionListener() {
 
@@ -124,6 +181,7 @@ public class MazeWindow extends BasicWindow {
 						String[] generateline = { "generate", "3d", "maze", generatewindow.nameText.getText(),
 								generatewindow.heightText.getText(), generatewindow.rowText.getText(),
 								generatewindow.columnText.getText() };
+						mazeName = generatewindow.nameText.getText();
 						String[] regex = ("generate 3d maze [A-Za-z0-9]+ [0-9]{1,2} [0-9]{1,2} [0-9]{1,2}").split("\b");
 						commandsList.add(regex);
 						commandsList.add(generateline);
@@ -131,31 +189,9 @@ public class MazeWindow extends BasicWindow {
 						notifyObservers();
 						commandsList.clear();
 						generatewindow.generateshell.close();
-						timer = new Timer();
-						task = new TimerTask() {
-							@Override
-							public void run() {
-								display.asyncExec(new Runnable() {
-									@Override
-									public void run() {
-										if (mazePainter.curentPosition.equals(mazePainter.goalPosition)){
-											
-											task.cancel();
-											
-										}
-										else{
-										mazePainter.redraw();
-										mazePainter.setFocus();
-										}
-										//mazePainter.update();
-									
-									}
-								});
-							}
-						};
+						mazePainter.redraw();
+						mazePainter.setFocus();
 						
-						timer.scheduleAtFixedRate(task, 0, 1000);
-				
 					}
 					@Override
 					public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -171,10 +207,67 @@ public class MazeWindow extends BasicWindow {
 
 			}
 		});
+		
+		
 		mazePainter = new Maze2D(shell, SWT.BORDER | SWT.DOUBLE_BUFFERED);
 		mazePainter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
-	
+		
+		Button solve = new Button(shell, SWT.PUSH);
+		solve.setLayoutData(new GridData(SWT.FILL, SWT.NONE, false, false, 1, 1));
+		solve.setText("solve");
+		solve.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				String[] line = ("solve" + " "+ mazeName +" " + "airdistance").split(" ");
+				String[] regexSolve = {"solve [A-Za-z0-9]+ [A-Za-z0-9]+"};
+				commandsList.add(regexSolve);
+				commandsList.add(line);
+				setChanged();
+				notifyObservers();
+				/*timer = new Timer();
+				task = new TimerTask() {
+					@Override
+					public void run() {
+						display.asyncExec(new Runnable() {
+							@Override
+							public void run() {
+							
+								for (int i = 0; i < mazePainter.solList.size();i++) {
+									mazePainter.curentPosition = mazePainter.solList.get(i).getState();
+									mazePainter.redraw();
+									return;
+								}
+								if (mazePainter.curentPosition.equals(mazePainter.goalPosition)) {
+									task.cancel();
+							
+								
+								//mazePainter.solList.iterator().next();  
+								
+								
+								
+								//mazePainter.setFocus();
+								}
+								//mazePainter.update();
+							
+							
+						});
+					}
+				};*/
+				
+				timer.scheduleAtFixedRate(task, 0, 1000);
+			}
+		});
+		mouseZoomlListener = new MouseWheelListener() {
 
+			@Override
+			public void mouseScrolled(MouseEvent e) {
+				// if both ctrl and wheel are being operated
+				if ((e.stateMask & SWT.CTRL) != 0)
+					mazePainter.setSize(mazePainter.getSize().x + e.count, mazePainter.getSize().y + e.count);
+
+			}
+		};
+		shell.addMouseWheelListener(mouseZoomlListener);
 		mazePainter.addKeyListener(new KeyListener() {
 
 			@Override

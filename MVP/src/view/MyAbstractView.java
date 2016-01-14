@@ -1,9 +1,13 @@
 package view;
 
+import java.awt.List;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
 import algorithms.mazeGenerator.Maze3d;
+import algorithms.mazeGenerator.Position;
+import algorithms.search.State;
 
 public abstract class MyAbstractView extends Observable implements View, Observer {
 
@@ -101,16 +105,23 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 	}
 	
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void DisplySolution(Object arg) {
 /*		if (mazeDisplayer == null)
 			mazeDisplayer = new Maze3D(mazeWindow.shell, SWT.BORDER);*/
 		    //mazeDisplayer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		if(arg.getClass() == Maze3d.class){
 		mazeWindow.mazePainter.setMaze((Maze3d)arg);
-		
+		}
+		else if(arg.getClass() == ArrayList.class){
+			mazeWindow.mazePainter.displayerSol((ArrayList<State<Position>>)arg);	
+		}
+			
+		}
 		//mazeWindow.paintConsole();
 	}
 
-	
 
-}
+
+

@@ -293,7 +293,7 @@ public class MyModel extends MyAbstractModel {
 		if (mazeMap.containsKey(mazeName)) {
 			updateData = (("The maze: " + mazeName + " " + "loaded successfully").split("\b"));
 			setChanged();
-			notifyObservers();
+			notifyObservers(mazeMap.get(mazeName));
 		}
 		else {
 			throw new RuntimeException(
@@ -409,7 +409,7 @@ public class MyModel extends MyAbstractModel {
 
 								updateData = (("solution for: " + mazeName + " " + "is ready").split("\b"));
 								setChanged();
-								notifyObservers();
+								notifyObservers(solution);
 							}
 
 						}
@@ -417,14 +417,14 @@ public class MyModel extends MyAbstractModel {
 							updateData = (("The maze: " + mazeName + " "
 									+ "is not exist in database please check the file name").split("\b"));
 							setChanged();
-							notifyObservers();
+							notifyObservers(solutionMap.get(mazeName));
 						}
 					}
 
 					else {
 						updateData = (("The maze: " + mazeName + " " + "is allrady solve").split("\b"));
 						setChanged();
-						notifyObservers();
+						notifyObservers(solution);
 
 					}
 				}

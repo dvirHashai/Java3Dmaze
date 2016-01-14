@@ -1,5 +1,7 @@
 package view;
 
+import java.util.ArrayList;
+
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Image;
@@ -8,6 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import algorithms.mazeGenerator.Maze3d;
 import algorithms.mazeGenerator.Position;
+import algorithms.search.State;
 
 
 // this is (1) the common type, and (2) a type of widget
@@ -19,7 +22,7 @@ public abstract class MazeDisplayer extends Canvas {
 	Position curentPosition ;
 	Position checker;
 	Maze3d maze;
-	
+	ArrayList<State<Position>> solList;
 	int dimension,row,Column;
 	// just as a stub...
 	int[][][] mazeData={
@@ -72,7 +75,7 @@ public abstract class MazeDisplayer extends Canvas {
 	public MazeDisplayer(Composite parent, int style) {
 		super(parent, style);
 		new Maze3d(1, 10, 10);
-	
+		solList =new ArrayList<>();
 	}
 
 	public void setMaze(Maze3d mazeData){
@@ -106,6 +109,20 @@ public abstract class MazeDisplayer extends Canvas {
 	public abstract void moveCharacterUpFloor();
 
 	public abstract void moveCharacterDownFloor();
-
-	//public abstract void winner();
+	
+	public void displayerSol(ArrayList<State<Position>> solution){
+		
+		
+		//System.out.println("a");
+		for (State<Position> state : solution) {
+			solList.add(state);
+		}
+		
+		
+	};
+	
+	
+		
+	
 }
+	//public abstract void winner();

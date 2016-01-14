@@ -1,4 +1,6 @@
 package view;
+import java.util.ArrayList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -10,6 +12,7 @@ import org.eclipse.swt.widgets.Label;
 
 import algorithms.mazeGenerator.Maze3d;
 import algorithms.mazeGenerator.Position;
+import algorithms.search.State;
 public class Maze2D extends MazeDisplayer {
 	
 	 public Maze2D(Composite parent,int style){
@@ -18,11 +21,16 @@ public class Maze2D extends MazeDisplayer {
 	    	// set a white background   (red, green, blue)
 	    	//setBackground(new Color(null, 255, 255, 255));
 	        //TODO fix the pic
+	        
 	    	Image back = new Image(getDisplay(),"back1.jpg");
 	    	Image charecter = new Image(getDisplay(),"character.png");
 	    	Image win = new Image(getDisplay(),"win.png");
 	    	Image sol = new Image(getDisplay(),"sol.png");
 	    	Image finish = new Image(getDisplay(),"finish.png");
+	    	Image wall = new Image(getDisplay(),"wall.png");
+	    	Image pipe = new Image(getDisplay(),"pipe.png");
+	    	
+	    	
 			setBackgroundImage(back);
 			
 	    	addPaintListener(new PaintListener() {
@@ -47,7 +55,8 @@ public class Maze2D extends MazeDisplayer {
 					          int x=j*w;
 					          int y=i*h;
 					          if(maze.getMaze3d()[curentPosition.getDimension()][i][j]!=0)
-					              e.gc.fillRectangle(x,y,w,h);
+					              //e.gc.fillRectangle(x,y,w,h);
+					               e.gc.drawImage(wall, 0, 0, wall.getBounds().width, wall.getBounds().height, x, y,w,h);
 					          if (i == curentPosition.getRows() && j == curentPosition.getColumns()) {
 					        	 
 					        		e.gc.drawImage(charecter, 0, 0, charecter.getBounds().width, charecter.getBounds().height, x, y,w,h);
@@ -57,6 +66,27 @@ public class Maze2D extends MazeDisplayer {
 					          if (i == goalPosition.getRows() && j == goalPosition.getColumns() && curentPosition.getDimension() == goalPosition.getDimension()){
 					        	  e.gc.drawImage(win, 0, 0, win.getBounds().width, win.getBounds().height, x, y,w,h);
 						   }
+					         /* 
+					          if( solList!= null){
+					        	for (int k = 0; k < solList.size(); k++) {
+					        		if(i==solList.get(i).getState().getRows() && j==solList.get(i).getState().getColumns()){
+					        		 e.gc.drawImage(sol, 0, 0, sol.getBounds().width, sol.getBounds().height,x, y,w,h);
+					        		}
+								}
+					          }*/
+					          /*if(solList!=null){
+					        	  for (int k = 0; k < solList.size(); k++) {
+									  curentPosition = solList.get(k).getState();
+									  e.gc.drawImage(charecter, 0, 0, charecter.getBounds().width, charecter.getBounds().height, x, y,w,h);
+								}
+					          }*/
+					       /*   Position floor = new Position(curentPosition.getDimension(), i, j);
+					 		if((maze.getmaze3dIndex((Position.MergerPos(floor, Position.UP)))==0)&& maze.getmaze3dIndex(curentPosition.getDimension(), i, j) == 0){
+					 			e.gc.drawImage(pipe, 0, 0, pipe.getBounds().width, pipe.getBounds().height, x, y,w,h);
+							}
+							if((maze.getmaze3dIndex((Position.MergerPos(floor, Position.DOWN)))==0)&& maze.getmaze3dIndex(curentPosition.getDimension(), i, j) == 0){
+								e.gc.drawImage(pipe, 0, 0, pipe.getBounds().width, pipe.getBounds().height, x, y,w,h);
+							}*/
 					        	
 					         
 					       /*   if ( curentPosition== curentPosition) {
@@ -170,6 +200,21 @@ public class Maze2D extends MazeDisplayer {
 		p.setRows(startPosition.getColumns()+1);
 		moveCharacter(p);
 	}
+	
+	public void checkFloor(int i,int j){
+		Position floor = new Position(curentPosition.getDimension(), i, j);
+		if(maze.getmaze3dIndex((Position.MergerPos(floor, Position.UP)))==0){
+			redraw();
+		}
+		if(maze.getmaze3dIndex((Position.MergerPos(floor, Position.DOWN)))==0){
+			redraw();
+		}
+	}
+
+	
+		
+	
+	
 //TODO winner function for character
 /*	@Override
 	public void winner() {
