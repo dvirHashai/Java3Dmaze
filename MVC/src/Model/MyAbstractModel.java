@@ -9,7 +9,7 @@ import algorithms.mazeGenerator.Maze3d;
 import algorithms.mazeGenerator.Position;
 import algorithms.search.State;
 
-public abstract class MyAbstractModel implements Model {
+public abstract  class MyAbstractModel implements Model {
 
 	/**
 	 * data member controller
@@ -117,4 +117,6 @@ public abstract class MyAbstractModel implements Model {
 	 */
 	@Override
 	abstract public void getDisplaySolution(String mazeName);
+
+	
 }
