@@ -67,5 +67,6 @@ public interface Model {
 	 * @param pathname
 	 */
 	void getDirPath(String pathname);
+	
 
 }
