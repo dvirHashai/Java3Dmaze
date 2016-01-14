@@ -78,17 +78,31 @@ public abstract class MazeDisplayer extends Canvas {
 		solList =new ArrayList<>();
 	}
 
-	public void setMaze(Maze3d mazeData){
+	public void setCanvas(Object arg){
 		
-		
-		this.maze = mazeData;
+		if(arg.getClass() == Maze3d.class){
+		this.maze = (Maze3d)arg;
 		this.dimension = maze.getDimension();
 		this.row = maze.getRow();
 		this.Column = maze.getColumn();
 		startPosition = maze.getStartPosition();
 		goalPosition = maze.getGoalPosition();
 		curentPosition = maze.getStartPosition();
-
+		}
+		if(arg.getClass() == State.class){
+			@SuppressWarnings("unchecked")
+			State<Position> state = (State<Position>)arg;
+			curentPosition = state.getState();
+		}
+		getDisplay().syncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				redraw();
+				
+			}
+		});
+		
 		System.out.println(maze.toString());
 	}
 	public void key(KeyListener keyListener){
@@ -110,13 +124,12 @@ public abstract class MazeDisplayer extends Canvas {
 
 	public abstract void moveCharacterDownFloor();
 	
-	public void displayerSol(ArrayList<State<Position>> solution){
+	public void displayerSol(State state){
 		
-		
-		//System.out.println("a");
-		for (State<Position> state : solution) {
-			solList.add(state);
-		}
+			//solList.addAll(arg);
+		//for (State<Position> state : arg) {
+			System.out.println(state.getState().toString());
+		//}
 		
 		
 	};

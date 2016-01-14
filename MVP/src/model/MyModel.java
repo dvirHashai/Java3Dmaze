@@ -10,6 +10,8 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -114,7 +116,11 @@ public class MyModel extends MyAbstractModel {
 							notifyObservers(currentMaze);
 						}
 						else {
+							Maze3d currentMaze = mazeMap.get(mazeName);
+							setChanged();
+							notifyObservers(currentMaze);
 							throw new RuntimeException("the maze is exist in database");
+							
 						}
 
 					}
@@ -371,6 +377,8 @@ public class MyModel extends MyAbstractModel {
 				Matcher m3 = AirDistance.matcher(algorithmName);
 				if (solutionMap.containsKey(mazeName)) {
 					updateData = (("The maze: " + mazeName + " " + "is allrady solve").split("\b"));
+					solution = solutionMap.get(mazeName);
+					sendState(solution);
 					setChanged();
 					notifyObservers();
 
@@ -409,23 +417,25 @@ public class MyModel extends MyAbstractModel {
 								out.close();
 
 								updateData = (("solution for: " + mazeName + " " + "is ready").split("\b"));
-								setChanged();
-								notifyObservers(solution);
+								sendState(solution);
+								
 							}
 
 						}
 						else {
-							updateData = (("The maze: " + mazeName + " "
-									+ "is not exist in database please check the file name").split("\b"));
+							updateData = (("The maze: " + mazeName + " "+ "is not exist in database please check the file name").split("\b"));
+							/*solution = solutionMap.get(mazeName);
+							sendState(solution);*/
 							setChanged();
-							notifyObservers(solutionMap.get(mazeName));
+							notifyObservers();
 						}
 					}
 
 					else {
 						updateData = (("The maze: " + mazeName + " " + "is allrady solve").split("\b"));
+						sendState(solution);
 						setChanged();
-						notifyObservers(solution);
+						notifyObservers();
 
 					}
 				}
@@ -435,55 +445,47 @@ public class MyModel extends MyAbstractModel {
 
 		});
 	}
+	
 
-	/*
-	 * new Thread(new Runnable() { public void run() { Maze3d maze =
-	 * mazeMap.get(mazeName); Searchable<Position> searchableMaze = new
-	 * Maze3dSearchable<>(maze); Searcher<Position> algorithem;
-	 * ArrayList<State<Position>> solution = new ArrayList<State<Position>>();
-	 * Pattern BFS = Pattern.compile("[BFSbfs]"); Pattern ManhattanDistance =
-	 * Pattern.compile("[MANHATTANDISTANCEmanhattandistance]"); Pattern
-	 * AirDistance = Pattern.compile("[AIRDISTANCEairdistance]"); Matcher m1 =
-	 * BFS.matcher(algorithmName); Matcher m2 =
-	 * ManhattanDistance.matcher(algorithmName); Matcher m3 =
-	 * AirDistance.matcher(algorithmName);
-	 * 
-	 * if (mazeMap.containsKey(mazeName)) { if (m1.lookingAt()) { algorithem =
-	 * new BFS<Position>(); solution =
-	 * algorithem.search(searchableMaze).getSol();
-	 * 
-	 * }
-	 * 
-	 * if (m2.lookingAt()) { algorithem = new AStar<Position>(new
-	 * ManhattanDistance()); solution =
-	 * algorithem.search(searchableMaze).getSol();
-	 * 
-	 * }
-	 * 
-	 * if (m3.lookingAt()) { algorithem = new AStar<Position>(new
-	 * AirDistance()); solution = algorithem.search(searchableMaze).getSol();
-	 * 
-	 * }
-	 * 
-	 * if (!solution.isEmpty()) { solutionMap.put(mazeName, solution);
-	 * updateDataData =(("solution for: " + mazeName + "is ready").split("\b"));
-	 * setChanged(); notifyObservers(); }
-	 * 
-	 * } else { updateDataData frown emoticon ("The maze: " + mazeName + " " +
-	 * "is not exist in database please check the file name") .split("\b"));
-	 * setChanged(); notifyObservers(); }
-	 * 
-	 * } }).start();;
-	 * 
-	 * }
-	 */
+	@Override
+	public void sendState(ArrayList<State<Position>> solution) {
+		timer = new Timer();
+		task = new TimerTask() {
+		int count = 0 ;
+			@Override
+			public void run() {
+				pool.execute(new Runnable() {
+					
+					@Override
+					public void run() {
+						if (solution.size() == count) {
+							
+							timer.cancel();
+							task.cancel();
+						}
+						else{
+					State<Position> state = solution.get(count);
+					count++;
+						setChanged();
+						notifyObservers(state);
+						
+						}
+					}
+				});
+				
+			}
+		};
+			
+			
+		
+		timer.scheduleAtFixedRate(task, 0, 1000);
+			
+		
+}
+	
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see Model.MyAbstractModel#getDisplaySolution(java.lang.String)
-	 */
-	// to display the solution step by step
+		
+	
 	@Override
 	public void getDisplaySolution(String mazeName) {
 		if (mazeMap.containsKey(mazeName)) {
@@ -525,5 +527,6 @@ public class MyModel extends MyAbstractModel {
 		}
 		
 	}
+
 
 }

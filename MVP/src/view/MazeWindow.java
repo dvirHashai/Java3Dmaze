@@ -33,9 +33,10 @@ public class MazeWindow extends BasicWindow {
 	KeyListener keyListener;
 	MazeDisplayer mazePainter;
 	GenerateWindow generatewindow;
-    MouseWheelListener mouseZoomlListener;
+	MouseWheelListener mouseZoomlListener;
 	String mazeName;
 	int counter = 0;
+
 	public MazeDisplayer getMaze() {
 		return mazePainter;
 	}
@@ -57,7 +58,7 @@ public class MazeWindow extends BasicWindow {
 	void initWidgets() {
 		shell.setLayout(new GridLayout(2, false));
 		shell.setText("Game Window");
-		
+
 		// Bar menu
 		Menu menuButton = new Menu(shell, SWT.BAR);
 		shell.setMenuBar(menuButton);
@@ -69,44 +70,31 @@ public class MazeWindow extends BasicWindow {
 		// Drop down functions for file button
 		Menu subMenu = new Menu(shell, SWT.DROP_DOWN);
 		fileItem.setMenu(subMenu);
-        
-		
-		/*MenuItem properties = new MenuItem(subMenu, SWT.PUSH);
-		properties.setText("Open Properties");
-		// Listener for load maze
-		properties.addListener(SWT.Selection, new Listener() {
 
-			@Override
-			public void handleEvent(Event arg0) {
-				FileDialog fd = new FileDialog(shell, SWT.OPEN);
-				fd.setText("Open Properties");
-				fd.setFilterPath("");
-				String[] filterExt = { "*.txt", "*.java", "*.xml","*.maze", "*.*" };
-				fd.setFilterExtensions(filterExt);
-				String selected = fd.open();
-				int counter = 0;
-				char[] chen = selected.toCharArray();
-				for (int i = 0; i < chen.length; i++) {
-					if("c".equals(chen[i])){
-						counter++;
-					}
-					System.out.println();
-				}
-				
-					System.out.println(counter);
-				
-				
-				
-				String[] regexLine = {"load maze [^ \n]+ [A-Za-z0-9]+"};
-				commandsList.add(regexLine);
-				//commandsList.add(selected);
-				setChanged();
-				notifyObservers();
-				commandsList.clear();
+		/*
+		 * MenuItem properties = new MenuItem(subMenu, SWT.PUSH);
+		 * properties.setText("Open Properties"); // Listener for load maze
+		 * properties.addListener(SWT.Selection, new Listener() {
+		 * 
+		 * @Override public void handleEvent(Event arg0) { FileDialog fd = new
+		 * FileDialog(shell, SWT.OPEN); fd.setText("Open Properties");
+		 * fd.setFilterPath(""); String[] filterExt = { "*.txt", "*.java",
+		 * "*.xml","*.maze", "*.*" }; fd.setFilterExtensions(filterExt); String
+		 * selected = fd.open(); int counter = 0; char[] chen =
+		 * selected.toCharArray(); for (int i = 0; i < chen.length; i++) {
+		 * if("c".equals(chen[i])){ counter++; } System.out.println(); }
+		 * 
+		 * System.out.println(counter);
+		 * 
+		 * 
+		 * 
+		 * String[] regexLine = {"load maze [^ \n]+ [A-Za-z0-9]+"};
+		 * commandsList.add(regexLine); //commandsList.add(selected);
+		 * setChanged(); notifyObservers(); commandsList.clear();
+		 * 
+		 * } });
+		 */
 
-			}
-		});*/
-		
 		// load maze button in the sub menu
 		MenuItem LoadMaze = new MenuItem(subMenu, SWT.PUSH);
 		LoadMaze.setText("LoadMaze\tCtrl+L");
@@ -131,12 +119,12 @@ public class MazeWindow extends BasicWindow {
 
 			}
 		});
-		
-		
-		/*LoadMaze.setAccelerator(SWT.MOD1 + 'A');
-		SaveMaze.setAccelerator(SWT.MOD1 + 'A');*/
-		
-		
+
+		/*
+		 * LoadMaze.setAccelerator(SWT.MOD1 + 'A');
+		 * SaveMaze.setAccelerator(SWT.MOD1 + 'A');
+		 */
+
 		// Help button in the bar
 		MenuItem helpItem = new MenuItem(menuButton, SWT.CASCADE);
 		helpItem.setText("&Help");
@@ -166,8 +154,6 @@ public class MazeWindow extends BasicWindow {
 		Button generateButton = new Button(shell, SWT.PUSH);
 		generateButton.setText("Generate");
 		generateButton.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false, 1, 1));
-		
-		
 
 		generateButton.addSelectionListener(new SelectionListener() {
 
@@ -191,8 +177,9 @@ public class MazeWindow extends BasicWindow {
 						generatewindow.generateshell.close();
 						mazePainter.redraw();
 						mazePainter.setFocus();
-						
+
 					}
+
 					@Override
 					public void widgetDefaultSelected(SelectionEvent arg0) {
 						// TODO Auto-generated method stub
@@ -207,54 +194,48 @@ public class MazeWindow extends BasicWindow {
 
 			}
 		});
-		
-		
+
 		mazePainter = new Maze2D(shell, SWT.BORDER | SWT.DOUBLE_BUFFERED);
 		mazePainter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
-		
+
 		Button solve = new Button(shell, SWT.PUSH);
 		solve.setLayoutData(new GridData(SWT.FILL, SWT.NONE, false, false, 1, 1));
 		solve.setText("solve");
 		solve.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				String[] line = ("solve" + " "+ mazeName +" " + "airdistance").split(" ");
-				String[] regexSolve = {"solve [A-Za-z0-9]+ [A-Za-z0-9]+"};
+				String[] line = ("solve" + " " + mazeName + " " + "airdistance").split(" ");
+				String[] regexSolve = { "solve [A-Za-z0-9]+ [A-Za-z0-9]+" };
 				commandsList.add(regexSolve);
 				commandsList.add(line);
 				setChanged();
 				notifyObservers();
-				/*timer = new Timer();
+			/*	timer = new Timer();
 				task = new TimerTask() {
 					@Override
 					public void run() {
 						display.asyncExec(new Runnable() {
 							@Override
 							public void run() {
-							
-								for (int i = 0; i < mazePainter.solList.size();i++) {
-									mazePainter.curentPosition = mazePainter.solList.get(i).getState();
-									mazePainter.redraw();
-									return;
-								}
+
 								if (mazePainter.curentPosition.equals(mazePainter.goalPosition)) {
 									task.cancel();
-							
-								
-								//mazePainter.solList.iterator().next();  
-								
-								
-								
-								//mazePainter.setFocus();
 								}
-								//mazePainter.update();
-							
-							
+
+								if (!(mazePainter.solList.isEmpty()) && (mazePainter.solList.get(counter) != null)) {
+									mazePainter.setFocus();
+									mazePainter.curentPosition = mazePainter.solList.get(counter).getState();
+									mazePainter.redraw();
+
+								}
+
+							}
+
 						});
 					}
-				};*/
-				
-				timer.scheduleAtFixedRate(task, 0, 1000);
+				};
+
+				timer.scheduleAtFixedRate(task, 0, 1000);*/
 			}
 		});
 		mouseZoomlListener = new MouseWheelListener() {
@@ -296,23 +277,23 @@ public class MazeWindow extends BasicWindow {
 		shell.setSize(1300, 800);
 		shell.open();
 		shell.addKeyListener(new KeyListener() {
-			
+
 			@Override
 			public void keyReleased(KeyEvent arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.keyCode == SWT.ERROR_WIDGET_DISPOSED)
+				if (e.keyCode == SWT.ERROR_DEVICE_DISPOSED)
 					commandsList.add("exit".split("\b"));
-					setChanged();
-					notifyObservers();
-				
+				setChanged();
+				notifyObservers();
+
 			}
 		});
-	
+
 	}
 
 }

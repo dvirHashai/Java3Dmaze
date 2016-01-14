@@ -94,7 +94,6 @@ public abstract class MyAbstractView extends Observable implements View, Observe
             notifyObservers();
 		}
 		if(o == mazeWindow){
-			this.mazeDisplayer = (MazeDisplayer) arg;
 			setCommandRegex(mazeWindow.commandsList.get(0)[0]);
 			setUserCommand(mazeWindow.commandsList.get(1));
 			
@@ -111,14 +110,12 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 /*		if (mazeDisplayer == null)
 			mazeDisplayer = new Maze3D(mazeWindow.shell, SWT.BORDER);*/
 		    //mazeDisplayer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		if(arg.getClass() == Maze3d.class){
-		mazeWindow.mazePainter.setMaze((Maze3d)arg);
-		}
-		else if(arg.getClass() == ArrayList.class){
-			mazeWindow.mazePainter.displayerSol((ArrayList<State<Position>>)arg);	
-		}
+		
+		mazeWindow.mazePainter.setCanvas(arg);
+	}
+	
 			
-		}
+		
 		//mazeWindow.paintConsole();
 	}
 
