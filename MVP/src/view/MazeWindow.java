@@ -295,7 +295,23 @@ public class MazeWindow extends BasicWindow {
 		// mazePainter.setMaze(maze3d);
 		shell.setSize(1300, 800);
 		shell.open();
-
+		shell.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.keyCode == SWT.ERROR_WIDGET_DISPOSED)
+					commandsList.add("exit".split("\b"));
+					setChanged();
+					notifyObservers();
+				
+			}
+		});
 	
 	}
 
