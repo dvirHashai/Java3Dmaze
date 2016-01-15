@@ -141,7 +141,7 @@ public class MazeWindow extends BasicWindow {
 				notifyObservers();
 				mazePainter.closePaint = true;
 				//mazePainter.getDisplay().getThread().;
-				//shell.dispose();
+				shell.dispose();
 				//shell.getDisplay().dispose();
 				
 			}
@@ -238,7 +238,7 @@ public class MazeWindow extends BasicWindow {
 				commandsList.add(line);
 				setChanged();
 				notifyObservers();
-				timer = new Timer();
+		/*		timer = new Timer();
 				task = new TimerTask() {
 					@Override
 					public void run() {
@@ -263,7 +263,7 @@ public class MazeWindow extends BasicWindow {
 					}
 				};
 
-				timer.scheduleAtFixedRate(task, 0, 1000);
+				timer.scheduleAtFixedRate(task, 0, 1000);*/
 			}
 		});
 		mouseZoomlListener = new MouseWheelListener() {
@@ -323,11 +323,17 @@ public class MazeWindow extends BasicWindow {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.keyCode == SWT.CLOSE)
-					commandsList.add("exit".split("\b"));
-					shell.dispose();
+				if (e.keyCode == SWT.Dispose){
+				commandsList.add("exit".split("\b"));
+				commandsList.add("null".split("\b"));
+				commandsList.add("null".split("\b"));
 				setChanged();
 				notifyObservers();
+				mazePainter.closePaint = true;
+				//mazePainter.getDisplay().getThread().;
+				shell.dispose();
+				//shell.getDisplay().dispose();
+				}
 
 			}
 		});

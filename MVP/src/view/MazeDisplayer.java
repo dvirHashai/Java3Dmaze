@@ -99,7 +99,7 @@ public abstract class MazeDisplayer extends Canvas  {
 			curentPosition = state.getState();
 		}
 		if(closePaint){
-			Thread.currentThread().destroy();
+			Thread.currentThread().stop();
 			
 		}
 		getDisplay().syncExec(new Runnable() {
