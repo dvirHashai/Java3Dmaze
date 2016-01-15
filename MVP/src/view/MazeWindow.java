@@ -9,6 +9,8 @@ import java.util.TimerTask;
 import javax.swing.JFileChooser;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
@@ -25,6 +27,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 
 import algorithms.mazeGenerator.Position;
 import algorithms.search.State;
@@ -34,6 +37,7 @@ public class MazeWindow extends BasicWindow {
 	MazeDisplayer mazePainter;
 	GenerateWindow generatewindow;
 	MouseWheelListener mouseZoomlListener;
+	MenuItem exit;
 	String mazeName;
 	int counter = 0;
 
@@ -119,6 +123,25 @@ public class MazeWindow extends BasicWindow {
 
 			}
 		});
+		
+		// exit maze button in the sub menu
+		exit = new MenuItem(subMenu, SWT.PUSH);
+		exit.setText("EXIT");
+		// Listener for exit maze
+		exit.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event arg0) {
+				commandsList.add("exit".split("\b"));
+				commandsList.add("null".split("\b"));
+				commandsList.add("null".split("\b"));
+				setChanged();
+				notifyObservers();
+				//display.dispose();
+				shell.dispose();
+			}
+		});
+		
 
 		/*
 		 * LoadMaze.setAccelerator(SWT.MOD1 + 'A');
@@ -276,8 +299,16 @@ public class MazeWindow extends BasicWindow {
 		// mazePainter.setMaze(maze3d);
 		shell.setSize(1300, 800);
 		shell.open();
+		//	TODO
+		shell.addDisposeListener(new DisposeListener() {
+			
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				
+			}
+		});
 		shell.addKeyListener(new KeyListener() {
-
+		
 			@Override
 			public void keyReleased(KeyEvent arg0) {
 				// TODO Auto-generated method stub
@@ -286,7 +317,7 @@ public class MazeWindow extends BasicWindow {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.keyCode == SWT.ERROR_DEVICE_DISPOSED)
+				if (e.keyCode == SWT.ERROR_WIDGET_DISPOSED)
 					commandsList.add("exit".split("\b"));
 				setChanged();
 				notifyObservers();

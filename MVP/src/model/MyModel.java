@@ -458,7 +458,7 @@ public class MyModel extends MyAbstractModel {
 					
 					@Override
 					public void run() {
-						if (solution.size() == count) {
+						if (solution.size() == count || !close) {
 							
 							timer.cancel();
 							task.cancel();
@@ -518,7 +518,9 @@ public class MyModel extends MyAbstractModel {
 
 	@Override
 	public void exit() {
+		close = false;
 		pool.shutdown();
+		
 		try {
 			pool.awaitTermination(100, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {

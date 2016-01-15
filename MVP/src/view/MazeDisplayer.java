@@ -7,6 +7,7 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 import algorithms.mazeGenerator.Maze3d;
 import algorithms.mazeGenerator.Position;
@@ -94,6 +95,7 @@ public abstract class MazeDisplayer extends Canvas {
 			State<Position> state = (State<Position>)arg;
 			curentPosition = state.getState();
 		}
+		if(!getDisplay().isDisposed()){
 		getDisplay().syncExec(new Runnable() {
 			
 			@Override
@@ -102,6 +104,7 @@ public abstract class MazeDisplayer extends Canvas {
 				
 			}
 		});
+		}
 		
 		System.out.println(maze.toString());
 	}
@@ -124,15 +127,11 @@ public abstract class MazeDisplayer extends Canvas {
 
 	public abstract void moveCharacterDownFloor();
 	
-	public void displayerSol(State state){
-		
-			//solList.addAll(arg);
-		//for (State<Position> state : arg) {
-			System.out.println(state.getState().toString());
-		//}
+	/*public void Exit(){
+		Display.class.di
 		
 		
-	};
+	};*/
 	
 	
 		

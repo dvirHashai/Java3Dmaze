@@ -113,11 +113,18 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 		
 		mazeWindow.mazePainter.setCanvas(arg);
 	}
+
+	@Override
+	public void exit() {
+		mazeWindow.shell.dispose();
+		
+	}
 	
 			
 		
 		//mazeWindow.paintConsole();
 	}
+
 
 
 
