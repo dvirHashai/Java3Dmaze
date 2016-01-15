@@ -458,10 +458,11 @@ public class MyModel extends MyAbstractModel {
 					
 					@Override
 					public void run() {
-						if (solution.size() == count || !close) {
+						if (solution.size() == count || close) {
 							
 							timer.cancel();
 							task.cancel();
+							
 						}
 						else{
 					State<Position> state = solution.get(count);
@@ -520,15 +521,20 @@ public class MyModel extends MyAbstractModel {
 	public void exit() {
 		close = false;
 		pool.shutdown();
-		
 		try {
-			pool.awaitTermination(100, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+				pool.shutdownNow();
+				if (!pool.awaitTermination(60, TimeUnit.SECONDS))
+					setChanged();
+					notifyObservers("Pool did not terminate");
+			}
+		} catch (InterruptedException ie) {
+			pool.shutdownNow();
+			Thread.currentThread().interrupt();
 		}
-		
 	}
+		
+	
 
 
 }

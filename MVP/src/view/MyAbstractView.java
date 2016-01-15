@@ -112,10 +112,12 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 		    //mazeDisplayer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
 		mazeWindow.mazePainter.setCanvas(arg);
+		
 	}
 
 	@Override
 	public void exit() {
+		mazeWindow.mazePainter.dispose();
 		mazeWindow.shell.dispose();
 		
 	}

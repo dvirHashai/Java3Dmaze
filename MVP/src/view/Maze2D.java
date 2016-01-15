@@ -212,6 +212,8 @@ public class Maze2D extends MazeDisplayer {
 	}
 
 	
+
+	
 		
 	
 	

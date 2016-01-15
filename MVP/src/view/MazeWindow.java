@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.security.auth.Destroyable;
 import javax.swing.JFileChooser;
 
 import org.eclipse.swt.SWT;
@@ -128,6 +129,7 @@ public class MazeWindow extends BasicWindow {
 		exit = new MenuItem(subMenu, SWT.PUSH);
 		exit.setText("EXIT");
 		// Listener for exit maze
+		
 		exit.addListener(SWT.Selection, new Listener() {
 
 			@Override
@@ -137,8 +139,11 @@ public class MazeWindow extends BasicWindow {
 				commandsList.add("null".split("\b"));
 				setChanged();
 				notifyObservers();
-				//display.dispose();
-				shell.dispose();
+				mazePainter.closePaint = true;
+				//mazePainter.getDisplay().getThread().;
+				//shell.dispose();
+				//shell.getDisplay().dispose();
+				
 			}
 		});
 		
@@ -233,7 +238,7 @@ public class MazeWindow extends BasicWindow {
 				commandsList.add(line);
 				setChanged();
 				notifyObservers();
-			/*	timer = new Timer();
+				timer = new Timer();
 				task = new TimerTask() {
 					@Override
 					public void run() {
@@ -258,7 +263,7 @@ public class MazeWindow extends BasicWindow {
 					}
 				};
 
-				timer.scheduleAtFixedRate(task, 0, 1000);*/
+				timer.scheduleAtFixedRate(task, 0, 1000);
 			}
 		});
 		mouseZoomlListener = new MouseWheelListener() {
@@ -299,6 +304,7 @@ public class MazeWindow extends BasicWindow {
 		// mazePainter.setMaze(maze3d);
 		shell.setSize(1300, 800);
 		shell.open();
+		
 		//	TODO
 		shell.addDisposeListener(new DisposeListener() {
 			
@@ -317,8 +323,9 @@ public class MazeWindow extends BasicWindow {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.keyCode == SWT.ERROR_WIDGET_DISPOSED)
+				if (e.keyCode == SWT.CLOSE)
 					commandsList.add("exit".split("\b"));
+					shell.dispose();
 				setChanged();
 				notifyObservers();
 

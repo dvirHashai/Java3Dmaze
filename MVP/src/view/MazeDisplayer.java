@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Toolkit;
 import java.util.ArrayList;
 
 import org.eclipse.swt.events.KeyAdapter;
@@ -17,12 +18,13 @@ import algorithms.search.State;
 // this is (1) the common type, and (2) a type of widget
 // (1) we can switch among different MazeDisplayers
 // (2) other programmers can use it naturally
-public abstract class MazeDisplayer extends Canvas {
+public abstract class MazeDisplayer extends Canvas  {
 	Position startPosition ;
 	Position goalPosition ;
 	Position curentPosition ;
 	Position checker;
 	Maze3d maze;
+	boolean closePaint = false;
 	ArrayList<State<Position>> solList;
 	int dimension,row,Column;
 	// just as a stub...
@@ -89,22 +91,29 @@ public abstract class MazeDisplayer extends Canvas {
 		startPosition = maze.getStartPosition();
 		goalPosition = maze.getGoalPosition();
 		curentPosition = maze.getStartPosition();
+		
 		}
 		if(arg.getClass() == State.class){
 			@SuppressWarnings("unchecked")
 			State<Position> state = (State<Position>)arg;
 			curentPosition = state.getState();
 		}
-		if(!getDisplay().isDisposed()){
+		if(closePaint){
+			Thread.currentThread().destroy();
+			
+		}
 		getDisplay().syncExec(new Runnable() {
 			
 			@Override
 			public void run() {
-				redraw();
+			//Toolkit.getDefaultToolkit().getScreenSize();
+			redraw();
 				
 			}
+			
 		});
-		}
+		
+		
 		
 		System.out.println(maze.toString());
 	}
