@@ -142,7 +142,7 @@ public class MazeWindow extends BasicWindow {
 				mazePainter.closePaint = true;
 				//mazePainter.getDisplay().getThread().;
 				shell.dispose();
-				//shell.getDisplay().dispose();
+				shell.getDisplay().close();
 				
 			}
 		});
@@ -323,7 +323,7 @@ public class MazeWindow extends BasicWindow {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.keyCode == SWT.Dispose){
+				if (e.keyCode == SWT.ERROR_WIDGET_DISPOSED){
 				commandsList.add("exit".split("\b"));
 				commandsList.add("null".split("\b"));
 				commandsList.add("null".split("\b"));
