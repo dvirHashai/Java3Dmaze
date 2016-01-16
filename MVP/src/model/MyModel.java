@@ -454,14 +454,13 @@ public class MyModel extends MyAbstractModel {
 		int count = 0 ;
 			@Override
 			public void run() {
-				pool.execute(new Runnable() {
-					
-					@Override
-					public void run() {
 						if (solution.size() == count || close) {
 							
-							timer.cancel();
 							task.cancel();
+							timer.cancel();
+							
+							System.out.println("2222");
+							return;
 							
 						}
 						else{
@@ -472,9 +471,9 @@ public class MyModel extends MyAbstractModel {
 						
 						}
 					}
-				});
 				
-			}
+				
+			
 		};
 			
 			
@@ -519,9 +518,10 @@ public class MyModel extends MyAbstractModel {
 
 	@Override
 	public void exit() {
-		close = false;
-		pool.shutdown();
-		try {
+		close = true;
+		futureMaze.cancel(close);
+		pool.shutdownNow();
+	/*	try {
 			if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
 				pool.shutdownNow();
 				if (!pool.awaitTermination(60, TimeUnit.SECONDS))
@@ -530,8 +530,8 @@ public class MyModel extends MyAbstractModel {
 			}
 		} catch (InterruptedException ie) {
 			pool.shutdownNow();
-			Thread.currentThread().interrupt();
-		}
+			//Thread.currentThread().interrupt();
+		}*/
 	}
 		
 	

@@ -143,6 +143,16 @@ public abstract class MyAbstractPresenter implements Presenter, Observer {
 				 help();
 
 			}
+			
+		});
+		CommandsMap.put("exit", new ICommand() {
+
+			@Override
+			public void docommand(String[] msg) throws IOException {
+				 exit();
+
+			}
+			
 		});
 		return CommandsMap;
 	}
@@ -154,7 +164,10 @@ public abstract class MyAbstractPresenter implements Presenter, Observer {
 
 	@Override
 	abstract public void update(Observable o, Object arg);
-	
+	public void exit(){
+		model.exit();
+		view.exit();
+	}
 	
 	public void help() {
 		String s = new String();

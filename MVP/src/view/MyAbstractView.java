@@ -1,20 +1,14 @@
 package view;
 
-import java.awt.List;
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-
-import algorithms.mazeGenerator.Maze3d;
-import algorithms.mazeGenerator.Position;
-import algorithms.search.State;
 
 public abstract class MyAbstractView extends Observable implements View, Observer {
 
 	protected String commandRegex;
 	protected String[] userCommand;
 	protected CLI client;
-    protected MazeDisplayer mazeDisplayer;
+    protected MazeDisplayAdapter mazePainterAdapter;
 	protected MazeWindow mazeWindow;
 	
 	public MyAbstractView() {
@@ -22,6 +16,9 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 
 	public void setBasicWindow(MazeWindow mazeWindow) {
 		this.mazeWindow = mazeWindow;
+	}
+	public void setMazeDisplayAdapter(MazeDisplayAdapter mazePainterAdapter) {
+		this.mazePainterAdapter = mazePainterAdapter;
 	}
 
 	/**
@@ -100,24 +97,32 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 			setChanged();
             notifyObservers();
 		}
+		if(o == mazePainterAdapter){
+			System.out.println("aaaaa");
+			
+			mazePainterAdapter.paintMaze();
+			
+			
+		}
 
 	}
 	
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void DisplySolution(Object arg) {
 /*		if (mazeDisplayer == null)
 			mazeDisplayer = new Maze3D(mazeWindow.shell, SWT.BORDER);*/
 		    //mazeDisplayer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
-		mazeWindow.mazePainter.setCanvas(arg);
+		mazePainterAdapter.setPainter(arg);
+		
 		
 	}
 
 	@Override
 	public void exit() {
-		mazeWindow.mazePainter.dispose();
+		mazePainterAdapter.in = false;
+		mazePainterAdapter.mazePainter.dispose();
 		mazeWindow.shell.dispose();
 		
 	}

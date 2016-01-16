@@ -1,6 +1,10 @@
 package model;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
+import algorithms.mazeGenerator.Position;
+import algorithms.search.State;
 
 public interface Model {
 	
@@ -71,4 +75,6 @@ public interface Model {
 	 * @param pathname
 	 */
 	void getDirPath(String pathname);
+	public void sendState(ArrayList<State<Position>> solution);
+	void exit();
 }

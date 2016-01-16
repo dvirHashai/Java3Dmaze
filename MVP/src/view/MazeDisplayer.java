@@ -82,7 +82,7 @@ public abstract class MazeDisplayer extends Canvas  {
 	}
 
 	public void setCanvas(Object arg){
-		
+		System.out.println("fff");
 		if(arg.getClass() == Maze3d.class){
 		this.maze = (Maze3d)arg;
 		this.dimension = maze.getDimension();
@@ -92,26 +92,28 @@ public abstract class MazeDisplayer extends Canvas  {
 		goalPosition = maze.getGoalPosition();
 		curentPosition = maze.getStartPosition();
 		
+		
 		}
 		if(arg.getClass() == State.class){
+			System.out.println("state");
 			@SuppressWarnings("unchecked")
 			State<Position> state = (State<Position>)arg;
 			curentPosition = state.getState();
 		}
-		if(closePaint){
+		/*if(closePaint){
 			Thread.currentThread().stop();
 			
-		}
-		getDisplay().syncExec(new Runnable() {
+		}*/
+	/*	getDisplay().syncExec(new Runnable() {
 			
 			@Override
 			public void run() {
 			//Toolkit.getDefaultToolkit().getScreenSize();
 			redraw();
 				
-			}
+			}*/
 			
-		});
+		//});
 		
 		
 		

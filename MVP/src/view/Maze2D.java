@@ -28,8 +28,8 @@ public class Maze2D extends MazeDisplayer {
 	    	Image sol = new Image(getDisplay(),"sol.png");
 	    	Image finish = new Image(getDisplay(),"finish.png");
 	    	Image wall = new Image(getDisplay(),"wall.png");
-	    	Image pipe = new Image(getDisplay(),"pipe.png");
-	    	
+	    	Image pipeUp = new Image(getDisplay(),"pipeUp.png");
+	    	Image pipeDown = new Image(getDisplay(),"pipeDown.png");
 	    	
 			setBackgroundImage(back);
 			
@@ -80,13 +80,13 @@ public class Maze2D extends MazeDisplayer {
 									  e.gc.drawImage(charecter, 0, 0, charecter.getBounds().width, charecter.getBounds().height, x, y,w,h);
 								}
 					          }*/
-					       /*   Position floor = new Position(curentPosition.getDimension(), i, j);
-					 		if((maze.getmaze3dIndex((Position.MergerPos(floor, Position.UP)))==0)&& maze.getmaze3dIndex(curentPosition.getDimension(), i, j) == 0){
-					 			e.gc.drawImage(pipe, 0, 0, pipe.getBounds().width, pipe.getBounds().height, x, y,w,h);
-							}
-							if((maze.getmaze3dIndex((Position.MergerPos(floor, Position.DOWN)))==0)&& maze.getmaze3dIndex(curentPosition.getDimension(), i, j) == 0){
-								e.gc.drawImage(pipe, 0, 0, pipe.getBounds().width, pipe.getBounds().height, x, y,w,h);
-							}*/
+					          Position floor = new Position(curentPosition.getDimension(), i, j);
+						 		if((maze.getmaze3dIndex((Position.MergerPos(floor, Position.UP)))==0)&& maze.getmaze3dIndex(curentPosition.getDimension(), i, j) == 0){
+						 			e.gc.drawImage(pipeUp, 0, 0, pipeUp.getBounds().width, pipeUp.getBounds().height, x +(2*(w/3)), y + (h/2),w/3,h/3);
+								}
+								if((maze.getmaze3dIndex((Position.MergerPos(floor, Position.DOWN)))==0)&& maze.getmaze3dIndex(curentPosition.getDimension(), i, j) == 0){
+									e.gc.drawImage(pipeDown, 0, 0, pipeDown.getBounds().width, pipeDown.getBounds().height, x, y+(h/2),w/3,h/3);
+								}
 					        	
 					         
 					       /*   if ( curentPosition== curentPosition) {
@@ -201,15 +201,15 @@ public class Maze2D extends MazeDisplayer {
 		moveCharacter(p);
 	}
 	
-	public void checkFloor(int i,int j){
+/*	public void checkFloor(int i,int j){
 		Position floor = new Position(curentPosition.getDimension(), i, j);
 		if(maze.getmaze3dIndex((Position.MergerPos(floor, Position.UP)))==0){
-			redraw();
+			//redraw();
 		}
 		if(maze.getmaze3dIndex((Position.MergerPos(floor, Position.DOWN)))==0){
-			redraw();
+			//redraw();
 		}
-	}
+	}*/
 
 	
 

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -31,7 +33,9 @@ public abstract class MyAbstractModel extends Observable implements Model {
 	 */
 	protected String[] updateData;
 	protected ExecutorService pool;
-	
+	boolean close = false;
+	protected Timer timer;
+	protected TimerTask task;
 	protected Future<Maze3dSearchable<Position>> futureMaze ;
 	public MyAbstractModel() {
 		this.mazeMap = new HashMap<String, Maze3d>();
@@ -129,5 +133,11 @@ public abstract class MyAbstractModel extends Observable implements Model {
 		
 		
 	}
+
+	@Override
+	public abstract void exit();
+
+	@Override
+	public abstract void sendState(ArrayList<State<Position>> solution);
 
 }

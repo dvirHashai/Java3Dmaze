@@ -4,9 +4,13 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
+import org.eclipse.swt.SWT;
+
 import model.MyModel;
 import presenter.MyPresenter;
 import view.CLI;
+import view.Maze2D;
+import view.MazeDisplayAdapter;
 import view.MazeWindow;
 import view.MyView;
 
@@ -26,12 +30,15 @@ public class Run {
 						new PrintWriter(System.out, true),
 						presenter.getCommandsMap(), view);
 			MazeWindow gui = new MazeWindow("GameWindow", 500, 300);
+			MazeDisplayAdapter painter = new MazeDisplayAdapter( new Maze2D(gui.getShell(), SWT.BORDER | SWT.DOUBLE_BUFFERED));
+			gui.setMazePainter(painter.getMazeDisplayer());
+			view.setMazeDisplayAdapter(painter);
 			view.setBasicWindow(gui);
+			painter.addObserver(view);
 			gui.addObserver(view);
-			
-			gui.run();
 			client.addObserver(view);
 			view.setClient(client);
+			gui.run();
 			//view.start();
 			
 		}

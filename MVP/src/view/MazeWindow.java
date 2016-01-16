@@ -1,13 +1,14 @@
 package view;
 
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.util.Iterator;
-import java.util.List;
+import java.io.FileInputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.security.auth.Destroyable;
-import javax.swing.JFileChooser;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -19,25 +20,22 @@ import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
-
-import algorithms.mazeGenerator.Position;
-import algorithms.search.State;
 
 public class MazeWindow extends BasicWindow {
 	KeyListener keyListener;
+	MazeDisplayAdapter mazePainterAdapter;
 	MazeDisplayer mazePainter;
 	GenerateWindow generatewindow;
 	MouseWheelListener mouseZoomlListener;
+	Clip music;
+	Clip sound;
 	MenuItem exit;
 	String mazeName;
 	int counter = 0;
@@ -48,15 +46,16 @@ public class MazeWindow extends BasicWindow {
 
 	Timer timer;
 	TimerTask task;
-
+	
+	/*public MazeDisplayer getMazeDisplayer(){
+		return mazePainter;
+	}*/
 	public MazeWindow(String title, int width, int height) {
 		super(title, width, height);
-
+		
 	}
-
-	public void paintConsole() {
-
-		mazePainter.redraw();
+	public void setMazePainter(MazeDisplayer mazePainter){
+		this.mazePainter = mazePainter;
 	}
 
 	@Override
@@ -139,10 +138,11 @@ public class MazeWindow extends BasicWindow {
 				commandsList.add("null".split("\b"));
 				setChanged();
 				notifyObservers();
-				mazePainter.closePaint = true;
+				mazePainterAdapter.mazePainter.closePaint = true;
 				//mazePainter.getDisplay().getThread().;
-				shell.dispose();
-				shell.getDisplay().close();
+				/*shell.getDisplay().close();
+				shell.dispose();*/
+				
 				
 			}
 		});
@@ -199,12 +199,14 @@ public class MazeWindow extends BasicWindow {
 						String[] regex = ("generate 3d maze [A-Za-z0-9]+ [0-9]{1,2} [0-9]{1,2} [0-9]{1,2}").split("\b");
 						commandsList.add(regex);
 						commandsList.add(generateline);
+						mazePainterAdapter.in = true;
 						setChanged();
 						notifyObservers();
+						mazePainterAdapter.in = false;
 						commandsList.clear();
 						generatewindow.generateshell.close();
-						mazePainter.redraw();
-						mazePainter.setFocus();
+						//mazeCanvas.mazePainter.redraw();
+						mazePainterAdapter.mazePainter.setFocus();
 
 					}
 
@@ -222,10 +224,11 @@ public class MazeWindow extends BasicWindow {
 
 			}
 		});
-
-		mazePainter = new Maze2D(shell, SWT.BORDER | SWT.DOUBLE_BUFFERED);
+		
+		
 		mazePainter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
-
+		mazePainterAdapter =  new MazeDisplayAdapter(mazePainter);
+		System.out.println("fffg");
 		Button solve = new Button(shell, SWT.PUSH);
 		solve.setLayoutData(new GridData(SWT.FILL, SWT.NONE, false, false, 1, 1));
 		solve.setText("solve");
@@ -236,8 +239,10 @@ public class MazeWindow extends BasicWindow {
 				String[] regexSolve = { "solve [A-Za-z0-9]+ [A-Za-z0-9]+" };
 				commandsList.add(regexSolve);
 				commandsList.add(line);
+				mazePainterAdapter.in = true;
 				setChanged();
 				notifyObservers();
+				mazePainterAdapter.in = false;
 		/*		timer = new Timer();
 				task = new TimerTask() {
 					@Override
@@ -246,14 +251,14 @@ public class MazeWindow extends BasicWindow {
 							@Override
 							public void run() {
 
-								if (mazePainter.curentPosition.equals(mazePainter.goalPosition)) {
+								if (mazePainterAdapter.mazePainter.curentPosition.equals(mazePainterAdapter.mazePainter.goalPosition)) {
 									task.cancel();
 								}
 
-								if (!(mazePainter.solList.isEmpty()) && (mazePainter.solList.get(counter) != null)) {
-									mazePainter.setFocus();
-									mazePainter.curentPosition = mazePainter.solList.get(counter).getState();
-									mazePainter.redraw();
+								if (!(mazePainterAdapter.mazePainter.solList.isEmpty()) && (mazePainterAdapter.mazePainter.solList.get(counter) != null)) {
+									mazePainterAdapter.mazePainter.setFocus();
+									mazePainterAdapter.mazePainter.curentPosition = mazePainterAdapter.mazePainter.solList.get(counter).getState();
+									mazePainterAdapter.mazePainter.redraw();
 
 								}
 
@@ -263,7 +268,26 @@ public class MazeWindow extends BasicWindow {
 					}
 				};
 
-				timer.scheduleAtFixedRate(task, 0, 1000);*/
+				timer.scheduleAtFixedRate(task, 0, 500);*/
+			}
+		});
+		
+		
+		Button music = new Button(shell, SWT.PUSH);
+		music.setLayoutData(new GridData(SWT.FILL, SWT.NONE, false, false, 1, 1));
+		music.setText("music");
+		music.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				playMusic(new File("mario.wav"));
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 		mouseZoomlListener = new MouseWheelListener() {
@@ -272,12 +296,12 @@ public class MazeWindow extends BasicWindow {
 			public void mouseScrolled(MouseEvent e) {
 				// if both ctrl and wheel are being operated
 				if ((e.stateMask & SWT.CTRL) != 0)
-					mazePainter.setSize(mazePainter.getSize().x + e.count, mazePainter.getSize().y + e.count);
+					mazePainterAdapter.mazePainter.setSize(mazePainterAdapter.mazePainter.getSize().x + e.count, mazePainterAdapter.mazePainter.getSize().y + e.count);
 
 			}
 		};
 		shell.addMouseWheelListener(mouseZoomlListener);
-		mazePainter.addKeyListener(new KeyListener() {
+		mazePainterAdapter.mazePainter.addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyReleased(KeyEvent s) {
@@ -288,17 +312,17 @@ public class MazeWindow extends BasicWindow {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.keyCode == SWT.ARROW_UP)
-					mazePainter.moveCharacterUp();
+					mazePainterAdapter.mazePainter.moveCharacterUp();
 				if (e.keyCode == SWT.ARROW_DOWN)
-					mazePainter.moveCharacterDown();
+					mazePainterAdapter.mazePainter.moveCharacterDown();
 				if (e.keyCode == SWT.ARROW_LEFT)
-					mazePainter.moveCharacterLeft();
+					mazePainterAdapter.mazePainter.moveCharacterLeft();
 				if (e.keyCode == SWT.ARROW_RIGHT)
-					mazePainter.moveCharacterRight();
+					mazePainterAdapter.mazePainter.moveCharacterRight();
 				if (e.keyCode == SWT.PAGE_UP)
-					mazePainter.moveCharacterUpFloor();
+					mazePainterAdapter.mazePainter.moveCharacterUpFloor();
 				if (e.keyCode == SWT.PAGE_DOWN)
-					mazePainter.moveCharacterDownFloor();
+					mazePainterAdapter.mazePainter.moveCharacterDownFloor();
 			}
 		});
 		// mazePainter.setMaze(maze3d);
@@ -329,7 +353,7 @@ public class MazeWindow extends BasicWindow {
 				commandsList.add("null".split("\b"));
 				setChanged();
 				notifyObservers();
-				mazePainter.closePaint = true;
+				mazePainterAdapter.mazePainter.closePaint = true;
 				//mazePainter.getDisplay().getThread().;
 				shell.dispose();
 				//shell.getDisplay().dispose();
@@ -339,5 +363,34 @@ public class MazeWindow extends BasicWindow {
 		});
 
 	}
+	private void playMusic(File file) {
+
+		try {
+			music = AudioSystem.getClip();
+			AudioInputStream inputStream = AudioSystem
+					.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
+			music.open(inputStream);
+			// loop infinitely
+			music.setLoopPoints(0, -1);
+			music.loop(Clip.LOOP_CONTINUOUSLY);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	private void playSound(File file) {
+		try {
+			sound = AudioSystem.getClip();
+			AudioInputStream inputStream = AudioSystem
+					.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
+			sound.open(inputStream);
+			sound.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+
 
 }

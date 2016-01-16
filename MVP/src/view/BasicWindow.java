@@ -27,6 +27,10 @@ public abstract class BasicWindow extends Observable implements Runnable {
 		shell.setText(title);
 		this.commandsList = new ArrayList<>();
 	}
+	public Shell getShell(){
+		return shell;
+		
+	}
 
 	abstract void initWidgets();
 
@@ -45,7 +49,7 @@ public abstract class BasicWindow extends Observable implements Runnable {
 
 		} 
 
-		display.dispose(); 
+		display.dispose();
 	}
 
 }

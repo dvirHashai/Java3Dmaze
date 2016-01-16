@@ -18,4 +18,6 @@ public interface View {
 
 	void DisplySolution(Object arg);
 
+	void exit();
+
 }
