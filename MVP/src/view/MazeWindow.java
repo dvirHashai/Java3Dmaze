@@ -347,7 +347,7 @@ public class MazeWindow extends BasicWindow {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.keyCode == SWT.ERROR_WIDGET_DISPOSED){
+				if (e.keyCode == SWT.CLOSE){
 				commandsList.add("exit".split("\b"));
 				commandsList.add("null".split("\b"));
 				commandsList.add("null".split("\b"));
