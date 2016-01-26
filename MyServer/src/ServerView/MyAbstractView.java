@@ -2,7 +2,7 @@ package ServerView;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-public abstract class MyAbstractView extends Observable implements InterfaeServerView, Observer {
+public abstract class MyAbstractView extends Observable implements InterfaceServerView, Observer {
 	
 	protected String commandRegex;
 	protected ArrayList<Object> userCommand;

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Observable;
 
 import ServerModel.Model;
-import ServerView.InterfaeServerView;
+import ServerView.InterfaceServerView;
 public class MyPresenter extends MyAbstractPresenter {
-	public MyPresenter(Model m, InterfaeServerView v) {
+	public MyPresenter(Model m, InterfaceServerView v) {
 		super(m, v);
 	}
 	@Override

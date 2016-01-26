@@ -27,6 +27,8 @@ public class MyClientHandler extends Observable implements ClientHandler, Serial
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	Boolean closeSocket = false;
 	/** The out to client. */
 	ObjectOutputStream ToClient;
 	/** The in from client. */
@@ -65,12 +67,13 @@ public class MyClientHandler extends Observable implements ClientHandler, Serial
 		PrintWriter outToServer = new PrintWriter(out);
 		outToServer.println("ok\n");
 		outToServer.flush();
+		
 		FromClient = new ObjectInputStream(in);
 		ToClient = new ObjectOutputStream(out);
 		ArrayList<Object> sol;
 		sol = (ArrayList<Object>) FromClient.readObject();
 		System.out.println(sol.get(0).toString());
-		
+		closeSocket = false;
 		setChanged();
 		notifyObservers(sol);
 		sol.clear();
@@ -82,20 +85,28 @@ public class MyClientHandler extends Observable implements ClientHandler, Serial
 				}
 				while ((response != null) && (check)) {
 					ToClient.writeObject(response);
-					System.out.println(((Maze3d) response).toString());
+					if(response instanceof ArrayList<?> ){
+						for (State<Position> state : (ArrayList<State<Position>>)response) {
+							System.out.println(state.getState().toString());
+						}
+					}
+					else if(response instanceof Maze3d ){
+						//System.out.println(((Maze3d)response).toString());
+					}
 					response = null;
 					check = false;
+					
 					ToClient.flush();
 					ToClient.reset();
 					FromClient.close();
 					ToClient.close();
-					
+					closeSocket=true;
 					return;
 				}
 			
 			}
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
    }
 		
@@ -115,7 +126,7 @@ public class MyClientHandler extends Observable implements ClientHandler, Serial
 			}
 		}
 		else if(arg instanceof Maze3d ){
-			System.out.println(((Maze3d)response).toString());
+			//System.out.println(((Maze3d)response).toString());
 		}
 		else if((arg != null) && (Ready == "Pool is terminate")){
 			try {
@@ -148,5 +159,8 @@ public class MyClientHandler extends Observable implements ClientHandler, Serial
 	 */
 	public Boolean getClose() {
 		return close;
+	}
+	public Boolean getCloseSocket() {
+		return closeSocket;
 	}
 }

@@ -2,7 +2,7 @@ package ServerView;
 
 import java.util.ArrayList;
 
-public interface InterfaeServerView {
+public interface InterfaceServerView {
 
 	/**
 	 * @param solution

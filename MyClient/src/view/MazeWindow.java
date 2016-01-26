@@ -22,7 +22,6 @@ import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -49,6 +48,7 @@ public class MazeWindow extends BasicWindow {
 	MenuItem exit;
 	String mazeName;
 	int counter = 0;
+	
 
 	public MazeDisplayer getMaze() {
 		return mazePainter;
@@ -294,7 +294,7 @@ public class MazeWindow extends BasicWindow {
 						String[] regex = ("generate 3d maze [A-Za-z0-9]+ [0-9]{1,2} [0-9]{1,2} [0-9]{1,2}").split("\b");
 						commandsList.add(regex);
 						commandsList.add(generateline);
-						mazePainterAdapter.in = true;
+						mazePainterAdapter.generateBG = true;
 						setChanged();
 						notifyObservers();
 						
@@ -320,8 +320,8 @@ public class MazeWindow extends BasicWindow {
 			}
 		});
 
-		mazePainter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
-		
+		mazePainter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,3));
+
 		System.out.println("fffg");
 		Button solve = new Button(shell, SWT.PUSH);
 		solve.setLayoutData(new GridData(SWT.FILL, SWT.NONE, false, false, 1, 1));
@@ -367,6 +367,10 @@ public class MazeWindow extends BasicWindow {
 			}
 		});
 
+		
+	
+		
+		
 		Button music = new Button(shell, SWT.PUSH);
 		music.setLayoutData(new GridData(SWT.FILL, SWT.NONE, false, false, 1, 1));
 		music.setText("music");
@@ -374,7 +378,11 @@ public class MazeWindow extends BasicWindow {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+			
+			
 				playMusic(new File("mario.wav"));
+				
+		
 
 			}
 
@@ -386,7 +394,7 @@ public class MazeWindow extends BasicWindow {
 		});
 		
 		
-		//shell.setBackgroundImage(mazePainter.back);
+		
 		
 		
 		mouseZoomlListener = new MouseWheelListener() {
@@ -478,6 +486,7 @@ public class MazeWindow extends BasicWindow {
 			// loop infinitely
 			music.setLoopPoints(0, -1);
 			music.loop(Clip.LOOP_CONTINUOUSLY);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -500,4 +509,6 @@ public class MazeWindow extends BasicWindow {
 		shell.dispose();
 		
 	}
+
+	
 }

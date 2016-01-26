@@ -24,11 +24,12 @@ public class Maze2D extends MazeDisplayer {
 	    	Image wall = new Image(getDisplay(),"wall.png");
 	    	Image pipeUp = new Image(getDisplay(),"pipeUp.png");
 	    	Image pipeDown = new Image(getDisplay(),"pipeDown.png");*/
-	    	
+	       
 			setBackgroundImage(back);
 			
+			
 	    	addPaintListener(new PaintListener() {
-				
+		
 				@Override
 				public void paintControl(PaintEvent e) {
 					try {
@@ -37,7 +38,7 @@ public class Maze2D extends MazeDisplayer {
 								setBackgroundImage(finish);
 								return;
 							}
-					   
+					  
 					   e.gc.setForeground(new Color(null,255,255,255));
 					   e.gc.setBackground(new Color(null,0,0,0));
 					   int width=getSize().x;
@@ -59,7 +60,11 @@ public class Maze2D extends MazeDisplayer {
 					            
 					          if (i == goalPosition.getRows() && j == goalPosition.getColumns() && curentPosition.getDimension() == goalPosition.getDimension()){
 					        	  e.gc.drawImage(win, 0, 0, win.getBounds().width, win.getBounds().height, x, y,w,h);
+					        	  
+					        	  
 						   }
+					          
+					          
 					         /* 
 					          if( solList!= null){
 					        	for (int k = 0; k < solList.size(); k++) {

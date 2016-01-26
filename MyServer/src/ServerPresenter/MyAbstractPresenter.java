@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import ServerModel.Model;
-import ServerView.InterfaeServerView;
+import ServerView.InterfaceServerView;
 public abstract class MyAbstractPresenter implements ServerPresenter, Observer {
 	/**
 	 * Data member model
@@ -17,7 +17,7 @@ public abstract class MyAbstractPresenter implements ServerPresenter, Observer {
 	/**
 	 * Data member view
 	 */
-	protected InterfaeServerView view;
+	protected InterfaceServerView view;
 	/**
 	 * Data member HashMap commands
 	 */
@@ -27,7 +27,7 @@ public abstract class MyAbstractPresenter implements ServerPresenter, Observer {
 	 */
 	protected ExecutorService pool;
 	
-	public MyAbstractPresenter(Model m, InterfaeServerView v) {
+	public MyAbstractPresenter(Model m, InterfaceServerView v) {
 		this.model = m;
 		this.view = v;
 		this.pool = Executors.newCachedThreadPool();

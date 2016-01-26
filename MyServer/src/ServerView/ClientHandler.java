@@ -36,4 +36,6 @@ public interface ClientHandler {
 	 */
 	public Boolean getClose() ;
 	
+	public Boolean getCloseSocket();
+	
 }

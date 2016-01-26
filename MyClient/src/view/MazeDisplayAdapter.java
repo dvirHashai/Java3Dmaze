@@ -4,6 +4,7 @@ public class MazeDisplayAdapter extends Observable {
 	MazeDisplayer mazePainter;
 	boolean in = true;
 	Boolean winMsg = false;
+	Boolean generateBG = false;
 	public MazeDisplayAdapter(MazeDisplayer mazeDisplayer) {
 		this.mazePainter = mazeDisplayer;
 	}
@@ -22,6 +23,10 @@ public class MazeDisplayAdapter extends Observable {
 			
 			@Override
 			public void run() {
+				if(generateBG){
+					mazePainter.setBackgroundImage(mazePainter.back);
+					
+				}
 				if (in) {
 					mazePainter.redraw();
 					mazePainter.setFocus();

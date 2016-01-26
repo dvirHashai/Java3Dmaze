@@ -87,12 +87,11 @@ public class MyServer implements Closeable {
 										clientsHandled++;
 										System.out.println("\thandling client " + clientsHandled);
 
-										clinetHandler.handleClient(someClient.getInputStream(),
-												someClient.getOutputStream());
+										clinetHandler.handleClient(someClient.getInputStream(),someClient.getOutputStream());
 										System.out.println("after");
 										while (true) {
 
-											if ((clinetHandler.checkClose() != true)) {
+											if (clinetHandler.getCloseSocket()) {
 												// Thread.sleep(3000);
 												System.out.println("the socket is closed");
 												someClient.close();
