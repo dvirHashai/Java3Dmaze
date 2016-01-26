@@ -445,6 +445,14 @@ public class MazeWindow extends BasicWindow {
 
 			}
 		});
+		shell.addDisposeListener(new DisposeListener() {
+			
+			@Override
+			public void widgetDisposed(DisposeEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		shell.addKeyListener(new KeyListener() {
 
 			@Override
