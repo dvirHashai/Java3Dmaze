@@ -1,4 +1,4 @@
-package view;
+package ServerView;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
@@ -20,7 +20,7 @@ public class GenerateWindow {
 		generateshell.setLayout(new GridLayout(2, false));
 		generateshell.setSize(500, 200);
 
-		generateshell.setText("maze Generate Window");
+		generateshell.setText("mazE Generate Window");
 		generateshell.setLayout(new GridLayout(2, false));
 
 		Group dialogFieldsGroup = new Group(generateshell, SWT.SHADOW_ETCHED_IN);

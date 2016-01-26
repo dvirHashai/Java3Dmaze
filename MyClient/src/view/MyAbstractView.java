@@ -1,39 +1,32 @@
 package view;
-
 import java.util.Observable;
 import java.util.Observer;
-
 public abstract class MyAbstractView extends Observable implements View, Observer {
-
 	protected String commandRegex;
 	protected String[] userCommand;
 	protected CLI client;
     protected MazeDisplayAdapter mazePainterAdapter;
 	protected MazeWindow mazeWindow;
 	
+	
 	public MyAbstractView() {
 	}
-
 	public void setBasicWindow(MazeWindow mazeWindow) {
 		this.mazeWindow = mazeWindow;
 	}
 	public void setMazeDisplayAdapter(MazeDisplayAdapter mazePainterAdapter) {
 		this.mazePainterAdapter = mazePainterAdapter;
 	}
-
 	/**
 	 * start method
 	 */
 	public void start() {
 		this.client.start();
 	}
-
 	public void setUserCommand(String[] userCommnd) {
 		
 		this.userCommand = userCommnd;
-
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -41,38 +34,30 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 	 */
 	@Override
 	public String[] getUserCommand() {
-
 		return this.userCommand;
 	}
-
 	@Override
 	public void setCommandRegex(String commandRegex) {
 		this.commandRegex = commandRegex;
-
 	}
-
 	public String getCommandRegex() {
 		return commandRegex;
 	}
-
 	/**
 	 * @param client
 	 */
 	public void setClient(CLI cli) {
 		this.client = cli;
 	}
-
 	/**
 	 * ShutDown method
 	 */
 	public void shutdown() {
 	}
-
 	/**
 	 * @param run
 	 */
 	abstract public void startRunable(Runnable run);
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -80,7 +65,6 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 	 */
 	@Override
 	abstract public void sendDisplySolution(String[] solution);
-
 	@Override
 	public void update(Observable o, Object arg) {
 		if (o == client) {
@@ -99,15 +83,21 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 		}
 		if(o == mazePainterAdapter){
 			System.out.println("aaaaa");
-			
+			mazePainterAdapter.in = true;
 			mazePainterAdapter.paintMaze();
+			if(mazePainterAdapter.mazePainter.curentPosition.equals(mazePainterAdapter.mazePainter.goalPosition)){
+				
+				MazeWindow.infoBox("*****Winner*****", "You Won");
+			}
+			
+				
+			
+		
 			
 			
 		}
-
 	}
 	
-
 	@Override
 	public void DisplySolution(Object arg) {
 /*		if (mazeDisplayer == null)
@@ -115,15 +105,15 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 		    //mazeDisplayer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
 		mazePainterAdapter.setPainter(arg);
-		System.out.println("aaaa");
+		System.out.println("again");
 		
 	}
-
 	@Override
 	public void exit() {
-		mazePainterAdapter.in = false;
-		mazePainterAdapter.mazePainter.dispose();
-		mazeWindow.shell.dispose();
+		
+		mazePainterAdapter.exit();
+		mazeWindow.exit();
+		
 		
 	}
 	
@@ -131,8 +121,3 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 		
 		//mazeWindow.paintConsole();
 	}
-
-
-
-
-

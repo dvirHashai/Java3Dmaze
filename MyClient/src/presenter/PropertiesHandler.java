@@ -1,5 +1,6 @@
 
 package presenter;
+
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
@@ -8,45 +9,52 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-
-
-
-/**
- *
- * @author User-Pc
- */
 public class PropertiesHandler {
 
-    private static  ClientProperties properties;
-    
+	/**
+	 * 
+	 */
+	private static ClientProperties properties;
 
-    public static ClientProperties getInstance() throws FileNotFoundException, Exception {
-        if (properties == null) {
-            properties =  read("ClientProperties.xml");
-            }
-        
-        return properties;
-    }
+	/**
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws Exception
+	 *             to check if we have xml file and if not, we create one
+	 */
+	public static ClientProperties getInstance() throws FileNotFoundException, Exception {
+		if (properties == null) {
+			properties = read("ClientProperties.xml");
+		}
 
- 
-    public static void write(ClientProperties p, String filename) throws Exception {
-        XMLEncoder encoder
-                = new XMLEncoder(
-                        new BufferedOutputStream(
-                                new FileOutputStream(filename)));
+		return properties;
+	}
 
-        encoder.writeObject(p);
-        encoder.flush();
-        encoder.close();
-    }
+	/**
+	 * @param p
+	 * @param filename
+	 * @throws Exception
+	 *             to write into the xml file
+	 */
+	public static void write(ClientProperties p, String filename) throws Exception {
+		XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(filename)));
 
-    public static ClientProperties read(String filename) throws Exception {
-        XMLDecoder decoder
-                = new XMLDecoder(new BufferedInputStream(
-                        new FileInputStream(filename)));
-        ClientProperties o = (ClientProperties) decoder.readObject();
-        decoder.close();
-        return o;
-    }
+		encoder.writeObject(p);
+		encoder.flush();
+		encoder.close();
+	}
+
+	/**
+	 * @param filename
+	 * @return
+	 * @throws Exception
+	 *             to read from the xml file
+	 */
+	public static ClientProperties read(String filename) throws Exception {
+		XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(new FileInputStream(filename)));
+		ClientProperties o = (ClientProperties) decoder.readObject();
+		decoder.close();
+		return o;
+	}
 
 }

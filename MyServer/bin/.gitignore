@@ -1,1 +1,7 @@
+/presenter/
+/boot/
+/model/
 /view/
+/ServerView/
+/ServerPresenter/
+/ServerModel/

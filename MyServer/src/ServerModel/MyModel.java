@@ -1,79 +1,59 @@
-package model;
-
-import java.io.BufferedReader;
-import java.io.EOFException;
+package ServerModel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
-
+import java.util.zip.GZIPOutputStream;
 import algorithms.mazeGenerator.Maze3d;
+import algorithms.mazeGenerator.MyMaze3dGenerator;
 import algorithms.mazeGenerator.Position;
+import algorithms.mazeGenerator.SimpleMaze3dGenerator;
+import algorithms.search.AStar;
+import algorithms.search.AirDistance;
+import algorithms.search.BFS;
+import algorithms.search.ManhattanDistance;
+import algorithms.search.Maze3dSearchable;
+import algorithms.search.Searchable;
+import algorithms.search.Searcher;
 import algorithms.search.State;
 import io.MyCompressorOutputStream;
 import io.MyDecompressorInputStream;
-
 public class MyModel extends MyAbstractModel {
-
-	/**
-	 * @throws IOException
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 *             constructor for my model to read the solution zip and maze3d
-	 *             zip
-	 */
 	@SuppressWarnings("unchecked")
 	public MyModel() throws IOException, IOException, ClassNotFoundException {
-
 		File solution = new File("solution" + ".zip");
 		File maze = new File("maze3d" + ".zip");
 		if (solution.exists() && solutionMap.isEmpty()) {
 			ObjectInputStream in = new ObjectInputStream(new GZIPInputStream(new FileInputStream("solution" + ".zip")));
 			Object o = in.readObject();
-
 			if (o instanceof HashMap<?, ?>) {
 				solutionMap = (HashMap<String, ArrayList<State<Position>>>) o;
 			}
-
 			in.close();
-
 		}
-
 		if (maze.exists() && mazeMap.isEmpty()) {
 			ObjectInputStream in = new ObjectInputStream(new GZIPInputStream(new FileInputStream("maze3d" + ".zip")));
 			Object o = in.readObject();
-
 			if (o instanceof HashMap<?, ?>) {
-				mazeMap = (HashMap<String, Maze3d>) o;
+				mazeMap =  (HashMap<String, Maze3d>) o;
 			}
-
 			in.close();
-
 		}
-
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see model.MyAbstractModel#getDirPath(java.lang.String)
-	 */
-	// to get the path of any file
 	@Override
 	public void getDirPath(String pathname) {
 		if (pathname.length() == 0) {
@@ -89,74 +69,87 @@ public class MyModel extends MyAbstractModel {
 			notifyObservers();
 			return;
 		}
-
 		this.updateData = file.list();
 		setChanged();
 		notifyObservers();
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see Model.MyAbstractModel#getGenrate3dMaze(java.lang.String, int, int,
 	 * int)
 	 */
-	// to send the server all the parameters like the name,
-	// dimensions,rows,columns.
-	// when we get our input we send it with the mvp architecture and generating
-	// the maze
+	// to generate new maze with he's name dimensions, rows and columns
 	@Override
 	public void getGenrate3dMaze(String mazeName, int dimensions, int rows, int columns) {
+		
+		this.futureMaze = this.pool.submit(new Callable<Maze3dSearchable<Position>>() {
+			Maze3d currentMaze;
+			@Override
+			public Maze3dSearchable<Position> call() throws Exception {
+				try {
+					if (dimensions > 1) {
+						if (!mazeMap.containsKey(mazeName)) {
+							if(properties.getMazeGenerator().equals("MyMaze3dGenerator")){
+							currentMaze = new MyMaze3dGenerator().generate(dimensions, rows, columns);
+							}
+							else if(properties.getMazeGenerator().equals("SimpleMaze3dGenerator")){
+								currentMaze = new SimpleMaze3dGenerator().generate(dimensions, rows, columns);
+							}
+							mazeMap.put(mazeName, currentMaze);
+							updateData = (("maze" + " " + mazeName + " " + "is ready" + "\n").split("\b"));
+							notify = "maze is ready";
+							ObjectOutputStream out = new ObjectOutputStream(
+									new GZIPOutputStream(new FileOutputStream(new File("maze3d" + ".zip"))));
+							out.writeObject(mazeMap);
+							out.close();
+							
+							
+							setChanged();
+							notifyObservers(currentMaze);
+						}
+						else {
+							Maze3d currentMaze = mazeMap.get(mazeName);
+							updateData = (("maze" + " " + mazeName + " " + "is ready" + "\n").split("\b"));
+							notify = "maze is ready";
 
-		System.out.println("Client Side");
-
-		System.out.println("in");
-		Maze3d currentMaze = null;
-
-		try {
-			theServer = new Socket(clientIp, port);
-			System.out.println("connected to server!");
-
-			PrintWriter outToServer = new PrintWriter(theServer.getOutputStream());
-			outToServer.println("Get Generate\n");
-			outToServer.flush();
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
-			System.out.println(in.readLine());// ok
-
-			toServer = new ObjectOutputStream(theServer.getOutputStream());
-
-			fromServer = new ObjectInputStream(theServer.getInputStream());
-
-			commandLine.add("generate 3d maze [A-Za-z0-9]+ [0-9]{1,2} [0-9]{1,2} [0-9]{1,2}");
-			commandLine.add(mazeName);
-			commandLine.add(dimensions);
-			commandLine.add(rows);
-			commandLine.add(columns);
-			System.out.println(commandLine.get(1).toString());
-			toServer.writeObject(commandLine);
-			toServer.flush();
-			commandLine.clear();
-			try {
-
-				currentMaze = (Maze3d) fromServer.readObject();
-
-				savedName = mazeName;
-				mazeMap.put(savedName, currentMaze);
-				setChanged();
-				notifyObservers(currentMaze);
-				toServer.close();
-				fromServer.close();
-				theServer.close();
-			} catch (EOFException | ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-
+							setChanged();
+							notifyObservers(currentMaze);
+							
+							throw new RuntimeException("the maze is exist in database");
+							
+						}
+					}
+					else {
+						throw new RuntimeException(
+								"The dimensions of the maze : " + mazeName + " " + " have to be bigger than 1 ...");
+					}
+				}
+				catch (Exception e) {
+					updateData = (e.toString().split("\b"));
+					setChanged();
+					notifyObservers(mazeMap.get(mazeName));
+				}
+				pool.submit(new Runnable() {
+					
+					@Override
+					public void run() {
+						try {
+							futureMaze.get();
+						}
+						catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						catch (ExecutionException e) {
+							e.printStackTrace();
+						}
+						
+					}
+				});
+				return null;
+				
 			}
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		});
 	}
 
 	/*
@@ -174,20 +167,17 @@ public class MyModel extends MyAbstractModel {
 						+ mazeMap.get(mazeName).toString()).split("\b"));
 				setChanged();
 				notifyObservers();
-			} else {
+			}
+			else {
 				throw new RuntimeException("The maze is not exist in dataBase");
-
 			}
 		}
-
 		catch (Exception e) {
 			updateData = (e.toString().split("\b"));
 			setChanged();
 			notifyObservers();
 		}
-
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -205,7 +195,6 @@ public class MyModel extends MyAbstractModel {
 				Matcher columns = crossByX.matcher(cross);
 				Matcher dimension = crossByY.matcher(cross);
 				Matcher rows = crossByZ.matcher(cross);
-
 				if (columns.lookingAt()) {
 					updateData = (mazeMap.get(mazeName).CrossToString(mazeMap.get(mazeName).getCrossSectionByX(index))
 							.toString().split("\b"));
@@ -224,23 +213,20 @@ public class MyModel extends MyAbstractModel {
 					setChanged();
 					notifyObservers();
 				}
-
-			} else {
-				throw new RuntimeException("the index is outside the scope of the maze");
-
 			}
-		} catch (Exception e) {
+			else {
+				throw new RuntimeException("the index is outside the scope of the maze");
+			}
+		}
+		catch (Exception e) {
 			updateData = (((e.toString() + "\n" + "the index is outside the scope of the maze"
 					+ "the sizes of the crosses are :" + "\n" + "X:" + mazeMap.get(mazeName).getColumn() + "\n" + "Y:"
 					+ mazeMap.get(mazeName).getDimension() + "\n" + "Z:" + mazeMap.get(mazeName).getRow()).toString())
 					.split("\b"));
 			setChanged();
 			notifyObservers();
-
 		}
-
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -250,19 +236,19 @@ public class MyModel extends MyAbstractModel {
 	// to save our zipped maze with specific name and in specific file name
 	@Override
 	public void getSaveMaze(String mazeName, String fileName) throws IOException {
-		if (mazeMap.containsKey(savedName)) {
-			OutputStream out = new MyCompressorOutputStream(new FileOutputStream(fileName /* + ".maze" */));
-			out.write(mazeMap.get(savedName).toByteArray());
+		if (mazeMap.containsKey(mazeName)) {
+			OutputStream out = new MyCompressorOutputStream(new FileOutputStream(fileName + ".maze"));
+			out.write(mazeMap.get(mazeName).toByteArray());
 			out.flush();
 			out.close();
-			updateData = (("the maze: " + savedName + " " + "is saved successfully in file: " + fileName).split("\b"));
+			updateData = (("the maze: " + mazeName + " " + "is saved successfully in file: " + fileName).split("\b"));
 			setChanged();
 			notifyObservers();
-		} else {
+		}
+		else {
 			throw new RuntimeException("The maze is not exist in dataBase");
 		}
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -272,24 +258,21 @@ public class MyModel extends MyAbstractModel {
 	// to load our maze with he's specific name and from specific file
 	@Override
 	public void getLoadeMaze(String fileName, String mazeName) throws IOException {
-		MyDecompressorInputStream in = new MyDecompressorInputStream(
-				new FileInputStream(new File(fileName /* + ".maze" */)));
-		byte b[] = new byte[(int) Files.size(new File(fileName/* + ".maze" */).toPath()) + 34];
+		MyDecompressorInputStream in = new MyDecompressorInputStream(new FileInputStream(new File(fileName + ".maze")));
+		byte b[] = new byte[(int) Files.size(new File(fileName + ".maze").toPath()) + 34];
 		in.read(b);
 		in.close();
-		System.out.println(savedName);
-		mazeMap.put(savedName, new Maze3d(b));
-		if (mazeMap.containsKey(savedName)) {
-			updateData = (("The maze: " + savedName + " " + "loaded successfully").split("\b"));
+		mazeMap.put(mazeName, new Maze3d(b));
+		if (mazeMap.containsKey(mazeName)) {
+			updateData = (("The maze: " + mazeName + " " + "loaded successfully").split("\b"));
 			setChanged();
-			notifyObservers(mazeMap.get(savedName));
-
-		} else {
+			notifyObservers(mazeMap.get(mazeName));
+		}
+		else {
 			throw new RuntimeException(
-					"The maze: " + savedName + " " + "is not exist in database please check the file name");
+					"The maze: " + mazeName + " " + "is not exist in database please check the file name");
 		}
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -303,13 +286,12 @@ public class MyModel extends MyAbstractModel {
 					* mazeMap.get(mazeName).getColumn() * 4 + 12 + 12 + 12 + " " + "bit").split("\b"));
 			setChanged();
 			notifyObservers();
-		} else {
+		}
+		else {
 			throw new RuntimeException(
 					"The maze: " + mazeName + " " + "is not exist in database please check the file name");
 		}
-
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -318,203 +300,177 @@ public class MyModel extends MyAbstractModel {
 	// to display the size of the maze in the file
 	@Override
 	public void getFileSize(String mazeName) {
-
 		try {
 			updateData = (("" + Files.size(new File(mazeName + ".maze").toPath()) + " " + "bit").split("\b"));
 			setChanged();
 			notifyObservers();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw new RuntimeException(
 					"The file: " + mazeName + " " + "is not exist in database please check the name of the maze");
-
 		}
-
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see Model.MyAbstractModel#getSolveMaze(java.lang.String,
 	 * java.lang.String)
 	 */
-	@SuppressWarnings("unchecked")
 	// to solve our maze with BFS algorithm or Astar algorithm (with 2 heuristic
 	// - ManhattanDistqance or AirDistance)
-	// in this case we solve it with AirDistance because this is the default
-	// solution that we made in the xml file
 	@Override
-	public void getSolveMaze(String mazeName) throws IOException {
-		System.out.println("Client Side");
-
-		System.out.println("in");
-		ArrayList<State<Position>> sol = new ArrayList<>();
-
-		try {
-			theServer = new Socket(clientIp, port);
-			System.out.println("connected to server!");
-
-			PrintWriter outToServer = new PrintWriter(theServer.getOutputStream());
-			outToServer.println("get solution\n");
-			outToServer.flush();
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
-			System.out.println(in.readLine());// ok
-
-			toServer = new ObjectOutputStream(theServer.getOutputStream());
-			fromServer = new ObjectInputStream(theServer.getInputStream());
-
-			commandLine.add("solve [A-Za-z0-9]+ [A-Za-z0-9]+");
-			commandLine.add(mazeName);
-
-			toServer.writeObject(commandLine);
-			toServer.flush();
-			commandLine.clear();
-
-			try {
-				sol = (ArrayList<State<Position>>) fromServer.readObject();
-				for (State<Position> state : sol) {
-					System.out.println(state.toString());
+	public void getSolveMaze(String mazeName) {
+		this.futureMaze = pool.submit(new Callable<Maze3dSearchable<Position>>() {
+			@Override
+			public Maze3dSearchable<Position> call() throws Exception {
+				Maze3d maze = mazeMap.get(mazeName);
+				Searchable<Position> searchableMaze = new Maze3dSearchable<>(maze);
+				Searcher<Position> algorithem ;
+				ArrayList<State<Position>> solution = new ArrayList<State<Position>>();
+				Pattern BFS = Pattern.compile("[BFSbfs]");
+				Pattern ManhattanDistance = Pattern.compile("[MANHATTANDISTANCEmanhattandistance]");
+				Pattern AirDistance = Pattern.compile("[AIRDISTANCEairdistance]");
+				Matcher m1 = BFS.matcher(properties.getSolveAlgorithm());
+				Matcher m2 = ManhattanDistance.matcher(properties.getSolveAlgorithm());
+				Matcher m3 = AirDistance.matcher(properties.getSolveAlgorithm());
+				if (solutionMap.containsKey(mazeName)) {
+					updateData = (("The maze: " + mazeName + " " + "is allrady solve").split("\b"));
+					solution = solutionMap.get(mazeName);
+					setChanged();
+					notifyObservers(solution);
 				}
-
-				System.out.println("i got it");// ok
-				sendState((ArrayList<State<Position>>) sol);
-				toServer.close();
-				fromServer.close();
-				theServer.close();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				else {
+					if (!solutionMap.containsKey(mazeName)) {
+						if (mazeMap.containsKey(mazeName)) {
+							if (m1.lookingAt()) {
+								algorithem = new BFS<Position>();
+								solution = algorithem.search(searchableMaze).getSol();
+							}
+							if (m2.lookingAt()) {
+								algorithem = new AStar<Position>(new ManhattanDistance());
+								solution = algorithem.search(searchableMaze).getSol();
+							}
+							if (m3.lookingAt()) {
+								algorithem = new AStar<Position>(new AirDistance());
+								solution = algorithem.search(searchableMaze).getSol();
+							}
+							if (!solution.isEmpty()) {
+								solutionMap.put(mazeName, solution);
+								ObjectOutputStream out = new ObjectOutputStream(
+										new GZIPOutputStream(new FileOutputStream(new File("solution" + ".zip"))));
+								out.writeObject(solutionMap);
+								System.out.println("good");
+								out.flush();
+								out.close();
+								updateData = (("solution for: " + mazeName + " " + "is ready").split("\b"));
+								notify = ("Solution Is Ready");
+								setChanged();
+								notifyObservers(solution);
+								
+							}
+						}
+						else {
+							updateData = (("The maze: " + mazeName + " "+ "is not exist in database please check the file name").split("\b"));
+							/*solution = solutionMap.get(mazeName);
+							sendState(solution);*/
+							setChanged();
+							notifyObservers();
+						}
+					}
+					else {
+						updateData = (("The maze: " + mazeName + " " + "is allrady solve").split("\b"));
+						notify = ("Solution Is Ready");
+						solution = solutionMap.get(mazeName);
+						setChanged();
+						notifyObservers(solution);
+					}
+				}
+				return futureMaze.get();
 			}
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
+		});
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see model.MyAbstractModel#sendState(java.util.ArrayList)
-	 */
-	// the sendState method that send for us state of solution on by one from
-	// the beginning to the end
-
+	
 	@Override
 	public void sendState(ArrayList<State<Position>> solution) {
 		timer = new Timer();
 		task = new TimerTask() {
-			int count = 0;
-
+		int count = 0 ;
 			@Override
 			public void run() {
-				if (solution.size() == count || close) {
-
-					task.cancel();
-					timer.cancel();
-
-					System.out.println("2222");
-					return;
-
-				} else {
+						if (solution.size() == count || close) {
+							
+							task.cancel();
+							timer.cancel();
+							
+							System.out.println("2222");
+							return;
+							
+						}
+						else{
 					State<Position> state = solution.get(count);
 					count++;
-					setChanged();
-					notifyObservers(state);
-
-				}
-			}
-
+						setChanged();
+						notifyObservers(state);
+						
+						}
+					}
+				
+				
+			
 		};
-
+			
+			
+		
 		timer.scheduleAtFixedRate(task, 0, 500);
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see model.MyAbstractModel#getDisplaySolution(java.lang.String)
-	 */
-	// to get all the solution and print him to the Command Line Interface
+			
+		
+}
+	
+		
+	
 	@Override
 	public void getDisplaySolution(String mazeName) {
 		if (mazeMap.containsKey(mazeName)) {
-
 			if (solutionMap.containsKey(mazeName)) {
 				ArrayList<State<Position>> solution = solutionMap.get(mazeName);
-
 				String[] sol = new String[solution.size()];
 				for (int i = 0; i < sol.length; i++) {
 					sol[i] = solution.get(i).getState().toString();
 				}
-
 				updateData = (sol);
 				setChanged();
 				notifyObservers();
-
-			} else {
+			}
+			else {
 				updateData = (("the maze: " + mazeName + " is not not have solution").split("\b"));
 				setChanged();
 				notifyObservers();
 			}
-		} else {
-			updateData = (("the maze: " + mazeName + " is not exist").split("\b"));
-
 		}
-
+		else {
+			updateData = (("the maze: " + mazeName + " is not exist").split("\b"));
+		}
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see model.MyAbstractModel#exit()
-	 */
-	// exit method to free all the open threads safely and to close our server
-	// safely.
 	@Override
 	public void exit() {
-		close = true;
-		try {
-			theServer = new Socket(clientIp, port);
-			System.out.println("connected to the server and dispose operation");
-			PrintWriter outToServer=new PrintWriter(theServer.getOutputStream());
-			outToServer.println("Dispos Your Self\n");
-			outToServer.flush();
-			
-			BufferedReader in=new BufferedReader(new InputStreamReader(theServer.getInputStream()));
-			System.out.println(in.readLine());// ok
-			toServer = new ObjectOutputStream(theServer.getOutputStream());
-			fromServer = new ObjectInputStream(theServer.getInputStream());
-			
-			commandLine.add("exit");
-			commandLine.add("null");
-			
-			toServer.writeObject(commandLine);
-			toServer.flush();
-			commandLine.clear();
-			toServer.close();
-			fromServer.close();
-			theServer.close();
-			System.out.println("Client dispose Connection with the server");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		pool.shutdown();
-			
 		try {
 			if (!pool.awaitTermination(10, TimeUnit.SECONDS)) {
 				pool.shutdownNow();
-			/*	if (!pool.awaitTermination(10, TimeUnit.SECONDS))
+				if (!pool.awaitTermination(10, TimeUnit.SECONDS)) {
+					notify = "Pool did not terminate";
 					setChanged();
-					notifyObservers("Pool did not terminate");*/
+					notifyObservers("server disconect");
+				}
+			} else {
+				notify = "Pool is terminate";
+				setChanged();
+				notifyObservers("server disconect");
 			}
 		} catch (InterruptedException ie) {
 			pool.shutdownNow();
-			//Thread.currentThread().interrupt();
 		}
 	}
-
+		
+	
 }

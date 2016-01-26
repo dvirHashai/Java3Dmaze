@@ -1,10 +1,14 @@
 package view;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Observable;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+
+import presenter.ClientProperties;
+import presenter.PropertiesHandler;
 
 public abstract class BasicWindow extends Observable implements Runnable {
 
@@ -18,9 +22,20 @@ public abstract class BasicWindow extends Observable implements Runnable {
 	 */
 	Shell shell;
 
+	ClientProperties clientProperties;
+	
 	ArrayList<String[]> commandsList;
 	
 	public BasicWindow(String title, int width, int height) {
+		try {
+			clientProperties = PropertiesHandler.getInstance();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		display = new Display();
 		shell = new Shell(display);
 		shell.setSize(width, height);

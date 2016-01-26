@@ -1,47 +1,34 @@
-package presenter;
-
+package ServerPresenter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Observable;
 
-import model.Model;
-import view.View;
-
+import ServerModel.Model;
+import ServerView.InterfaeServerView;
 public class MyPresenter extends MyAbstractPresenter {
-
-	/**
-	 * @param m
-	 * @param v
-	 */
-	public MyPresenter(Model m, View v) {
+	public MyPresenter(Model m, InterfaeServerView v) {
 		super(m, v);
-
 	}
-
-	/* (non-Javadoc)
-	 * @see presenter.MyAbstractPresenter#update(java.util.Observable, java.lang.Object)
-	 */
-	//to get the notify from the model or the client and to route it
 	@Override
 	public void update(Observable o, Object arg) {
 		if (o == model) {
 			if (arg != null) {
-				view.DisplySolution(arg);
+				
+				view.DisplySolution(arg, model.getNotify());
+				
 			} else {
 				String[] s = model.getupdateData();
 				view.sendDisplySolution(s);
 			}
-
 		}
 		if (o == view) {
 			String command = view.getCommandRegex();
-			String[] msg = view.getUserCommand();
+			ArrayList<Object> msg = view.getUserCommand();
 			try {
 				CommandsMap.get(command).docommand(msg);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-
 	}
-
 }

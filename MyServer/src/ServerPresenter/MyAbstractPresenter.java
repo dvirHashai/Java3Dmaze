@@ -1,192 +1,141 @@
-package presenter;
-
+package ServerPresenter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import model.Model;
-import view.View;
-
-public abstract class MyAbstractPresenter implements Presenter, Observer {
-
+import ServerModel.Model;
+import ServerView.InterfaeServerView;
+public abstract class MyAbstractPresenter implements ServerPresenter, Observer {
 	/**
 	 * Data member model
 	 */
 	protected Model model;
-
 	/**
 	 * Data member view
 	 */
-	protected View view;
+	protected InterfaeServerView view;
 	/**
 	 * Data member HashMap commands
 	 */
 	protected HashMap<String, ICommand> CommandsMap;
-
 	/**
 	 * Data member pool
-	 *//*
-	protected ExecutorService pool;*/
-
-	
-	/**
-	 * @param m
-	 * @param v
-	 * constructor to initialize 
 	 */
-	public MyAbstractPresenter(Model m, View v) {
+	protected ExecutorService pool;
+	
+	public MyAbstractPresenter(Model m, InterfaeServerView v) {
 		this.model = m;
 		this.view = v;
-		//this.pool = Executors.newCachedThreadPool();
+		this.pool = Executors.newCachedThreadPool();
 		setCommands();
 	}
-
-	/* (non-Javadoc)
-	 * @see presenter.Presenter#setCommands()
-	 */
-	//to send our request to the model 
 	public HashMap<String, ICommand> setCommands() {
 		this.CommandsMap = new HashMap<String, ICommand>();
 		CommandsMap.put("dir [^ \n]+", new ICommand() {
-
 			@Override
-			public void docommand(String[] msg) throws IOException {
-				model.getDirPath(msg[1]);
-
+			public void docommand(ArrayList<Object> msg) throws IOException {
+				model.getDirPath((String) msg.get(1));
 			}
 		});
 		CommandsMap.put("generate 3d maze [A-Za-z0-9]+ [0-9]{1,2} [0-9]{1,2} [0-9]{1,2}", new ICommand() {
-
 			@Override
-			public void docommand(String[] msg) throws IOException {
-				String mazeName = msg[3];
-				int dim = Integer.parseInt(msg[4]);
-				int row = Integer.parseInt(msg[5]);
-				int col = Integer.parseInt(msg[6]);
+			public void docommand(ArrayList<Object> msg) throws IOException {
+				String mazeName = (String) msg.get(1);
+				int dim =  (int) msg.get(2);
+				int row = (int) msg.get(3);
+				int col = (int) msg.get(4);
 				model.getGenrate3dMaze(mazeName, dim, row, col);
 			}
 		});
 		CommandsMap.put("display [^ \n]+", new ICommand() {
-
 			@Override
-			public void docommand(String[] msg) throws IOException {
-				model.getDisplayMaze(msg[1]);
-
+			public void docommand(ArrayList<Object> msg) throws IOException {
+				model.getDisplayMaze((String) msg.get(1));
 			}
 		});
 		CommandsMap.put("display cross section by [XYZxyz] [0-9]{1,2} for [A-Za-z0-9]+", new ICommand() {
-
 			@Override
-			public void docommand(String[] msg) throws IOException {
-				String cross = msg[4];
-				int index = Integer.parseInt(msg[5]);
-				String mazeName = msg[7];
+			public void docommand(ArrayList<Object> msg) throws IOException {
+				String cross = (String) msg.get(4);
+				int index = Integer.parseInt((String) msg.get(5));
+				String mazeName = (String) msg.get(7);
 				model.getDisplayCrossSection(cross, index, mazeName);
-
 			}
 		});
 		CommandsMap.put("save maze [A-Za-z0-9]+ [^ \n]+", new ICommand() {
-
 			@Override
-			public void docommand(String[] msg) throws IOException {
-				String mazeName = msg[2];
-				String fileName = msg[3];
+			public void docommand(ArrayList<Object> msg) throws IOException {
+				String mazeName = (String) msg.get(2);
+				String fileName = (String) msg.get(3);
 				model.getSaveMaze(mazeName, fileName);
-
 			}
 		});
 		CommandsMap.put("load maze [^ \n]+ [A-Za-z0-9]+", new ICommand() {
-
 			@Override
-			public void docommand(String[] msg) throws IOException {
-				String fileName = msg[2];
-				String mazeName = msg[3];
+			public void docommand(ArrayList<Object> msg) throws IOException {
+				String fileName = (String) msg.get(2);
+				String mazeName = (String) msg.get(3);
 				model.getLoadeMaze(fileName, mazeName);
-
 			}
 		});
 		CommandsMap.put("maze size [A-Za-z0-9]+", new ICommand() {
-
 			@Override
-			public void docommand(String[] msg) throws IOException {
-				String mazeName = msg[2];
+			public void docommand(ArrayList<Object> msg) throws IOException {
+				String mazeName = (String) msg.get(2);
 				model.getMazeSize(mazeName);
-
 			}
 		});
 		CommandsMap.put("file size [A-Za-z0-9]+", new ICommand() {
-
 			@Override
-			public void docommand(String[] msg) throws IOException {
-				String mazeName = msg[2];
+			public void docommand(ArrayList<Object> msg) throws IOException {
+				String mazeName = (String) msg.get(2);
 				model.getFileSize(mazeName);
-
 			}
 		});
 		CommandsMap.put("solve [A-Za-z0-9]+ [A-Za-z0-9]+", new ICommand() {
-
 			@Override
-			public void docommand(String[] msg) throws IOException {
-				String mazeName = msg[1];
+			public void docommand(ArrayList<Object> msg) throws IOException {
+				String mazeName = (String) msg.get(1);
 				model.getSolveMaze(mazeName);
-
 			}
 		});
 		CommandsMap.put("display solution [A-Za-z0-9]+", new ICommand() {
-
 			@Override
-			public void docommand(String[] msg) throws IOException {
-				String mazeName = msg[2];
+			public void docommand(ArrayList<Object> msg) throws IOException {
+				String mazeName = (String) msg.get(2);
 				model.getDisplaySolution(mazeName);
-
 			}
 		});
 		CommandsMap.put("help", new ICommand() {
-
 			@Override
-			public void docommand(String[] msg) throws IOException {
-				help();
-
+			public void docommand(ArrayList<Object> msg) throws IOException {
+				 help();
 			}
-
+			
 		});
 		CommandsMap.put("exit", new ICommand() {
-
 			@Override
-			public void docommand(String[] msg) throws IOException {
-				exit();
-
+			public void docommand(ArrayList<Object> msg) throws IOException {
+				 exit();
 			}
-
+			
 		});
 		return CommandsMap;
 	}
-
-	/** 
-	 * @return CommandsMap
-	 */
 	public HashMap<String, ICommand> getCommandsMap() {
 		return CommandsMap;
 	}
-
-	/* (non-Javadoc)
-	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-	 */
-	//to get the notify from the model or the client and to route it
 	@Override
 	abstract public void update(Observable o, Object arg);
-
-	public void exit() {
-		view.exit();
+	public void exit(){
 		model.exit();
-
+		//view.exit();
 	}
-
-	/* (non-Javadoc)
-	 * @see presenter.Presenter#help()
-	 */
-	//help method to know the commands that user can use
+	
 	public void help() {
 		String s = new String();
 		s += "dir <path>" + "\n";

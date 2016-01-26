@@ -2,16 +2,13 @@ package boot;
 
 import java.io.FileNotFoundException;
 
-import javax.swing.plaf.basic.BasicComboBoxUI.PropertyChangeHandler;
-
-import model.MyModel;
-
-import presenter.MyPresenter;
-import presenter.Properties;
-import presenter.PropertiesHandler;
-import view.MyClientHandler;
-import view.MyServer;
-import view.MyView;
+import ServerModel.MyModel;
+import ServerPresenter.MyPresenter;
+import ServerPresenter.Properties;
+import ServerPresenter.ServerPropertiesHandler;
+import ServerView.MyClientHandler;
+import ServerView.MyServer;
+import ServerView.ServerView;
 
 public class RunServer {
 
@@ -19,23 +16,24 @@ public class RunServer {
 		try {
 			Properties properties;
 			try {
-				properties = PropertiesHandler.getInstance();
+				properties = ServerPropertiesHandler.getInstance();
 			} catch (FileNotFoundException e) {
 				System.out.println("Could not find properties file, using default set");
 				properties = new Properties();
 				try {
-					PropertiesHandler.write(properties, "properties.xml");
+					ServerPropertiesHandler.write(properties, "properties.xml");
 				} catch (FileNotFoundException e1) {
 					System.out.println("Could not save default properties file, please check manually");
 				}
 			}
 			MyModel model = new MyModel();
-			MyView view = new MyView();
+			ServerView view = new ServerView();
 			MyPresenter presenter = new MyPresenter(model, view);
 			model.addObserver(presenter);
 			view.addObserver(presenter);
 			
 			MyClientHandler ch = new MyClientHandler();
+			@SuppressWarnings("resource")
 			MyServer server = new MyServer(3333,5,ch);
 			view.setClientHandler(ch);
 			server.start();

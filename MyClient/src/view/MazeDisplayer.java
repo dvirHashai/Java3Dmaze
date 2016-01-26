@@ -1,6 +1,5 @@
 package view;
 
-import java.awt.Toolkit;
 import java.util.ArrayList;
 
 import org.eclipse.swt.events.KeyAdapter;
@@ -8,7 +7,6 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 
 import algorithms.mazeGenerator.Maze3d;
 import algorithms.mazeGenerator.Position;
@@ -24,6 +22,17 @@ public abstract class MazeDisplayer extends Canvas  {
 	Position curentPosition ;
 	Position checker;
 	Maze3d maze;
+	
+	Image back ;
+	Image charecter ;
+	Image win ;
+	Image sol ;
+	Image finish ;
+	Image wall ;
+	Image pipeUp ;
+	Image pipeDown ;
+	
+	ArrayList<Image> mazePicList;
 	boolean closePaint = false;
 	ArrayList<State<Position>> solList;
 	int dimension,row,Column;
@@ -79,6 +88,16 @@ public abstract class MazeDisplayer extends Canvas  {
 		super(parent, style);
 		new Maze3d(1, 10, 10);
 		solList =new ArrayList<>();
+		mazePicList = new ArrayList<>();
+		mazePicList.add(back = new Image(getDisplay(),"back1.jpg"));
+		back = new Image(getDisplay(),"back1.jpg");
+		mazePicList.add(charecter = new Image(getDisplay(),"character.png"));
+		mazePicList.add(win = new Image(getDisplay(),"win.png"));
+		mazePicList.add( sol = new Image(getDisplay(),"sol.png"));
+		mazePicList.add(finish = new Image(getDisplay(),"finish.png"));
+		mazePicList.add( wall = new Image(getDisplay(),"wall.png"));
+		mazePicList.add(pipeUp = new Image(getDisplay(),"pipeUp.png"));
+		mazePicList.add(pipeDown = new Image(getDisplay(),"pipeDown.png"));
 	}
 
 	public void setCanvas(Object arg){
@@ -99,7 +118,10 @@ public abstract class MazeDisplayer extends Canvas  {
 			@SuppressWarnings("unchecked")
 			State<Position> state = (State<Position>)arg;
 			curentPosition = state.getState();
+			
 		}
+		System.out.println(curentPosition.toString());
+		System.out.println(maze.toString());
 		/*if(closePaint){
 			Thread.currentThread().stop();
 			
@@ -114,10 +136,21 @@ public abstract class MazeDisplayer extends Canvas  {
 			}*/
 			
 		//});
+	}
+		public void exitAndDisposMazeDisplayer(){
+			for (Image is : mazePicList) {
+				is.dispose();
+			}
+			this.dispose();
+			
+		}
+		
+		public void DisposMazePicList(){
+			for (Image is : mazePicList) {
+				is.dispose();
+			}
 		
 		
-		
-		System.out.println(maze.toString());
 	}
 	public void key(KeyListener keyListener){
 		addKeyListener(new KeyAdapter() {

@@ -1,10 +1,8 @@
 package boot;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.Properties;
 
 import org.eclipse.swt.SWT;
 
@@ -17,9 +15,7 @@ import view.Maze2D;
 import view.MazeDisplayAdapter;
 import view.MazeWindow;
 import view.MyView;
-
 public class RunClient {
-
 	public static void main(String[] args) {
 		try {
 			
@@ -49,6 +45,7 @@ public class RunClient {
 			MazeWindow gui = new MazeWindow("GameWindow", 500, 300);
 			MazeDisplayAdapter painter = new MazeDisplayAdapter( new Maze2D(gui.getShell(), SWT.BORDER | SWT.DOUBLE_BUFFERED));
 			gui.setMazePainter(painter.getMazeDisplayer());
+			gui.setMazeDisplayAdapter(painter);
 			view.setMazeDisplayAdapter(painter);
 			view.setBasicWindow(gui);
 			painter.addObserver(view);
@@ -67,7 +64,6 @@ public class RunClient {
 	
 		
 	
-
 	/*	MazeWindow run = new MazeWindow("mazeTest", 500, 300);
 		run.run();*/
 }
