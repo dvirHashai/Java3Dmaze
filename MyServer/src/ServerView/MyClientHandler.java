@@ -101,7 +101,7 @@ public class MyClientHandler extends Observable implements ClientHandler, Serial
 						}
 					}
 					else if(response instanceof Maze3d ){
-					 //System.out.println(((Maze3d)response).toString());
+					  //System.out.println(((Maze3d)response).toString());
 					}
 					FromClient.close();
 					ToClient.close();
