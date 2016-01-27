@@ -123,7 +123,7 @@ public class MyClientHandler extends Observable implements ClientHandler, Serial
 	/* (non-Javadoc)
 	 * @see view.ClientHandler#getResponse(java.lang.Object, java.lang.String)
 	 */
-	@SuppressWarnings("unchecked")
+
 	public void getResponse(Object arg, String string) {
 		response = arg;
 		Ready = string;
