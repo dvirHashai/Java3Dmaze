@@ -442,6 +442,11 @@ public class MazeWindow extends BasicWindow {
 
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
+				commandsList.add("exit".split("\b"));
+				commandsList.add("null".split("\b"));
+				setChanged();
+				notifyObservers();
+				commandsList.clear();
 
 			}
 		});

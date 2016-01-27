@@ -385,7 +385,7 @@ public class MyModel extends MyAbstractModel {
 						notifyObservers(solution);
 					}
 				}
-				return futureMaze.get();
+				return null;//futureMaze.get();
 			}
 		});
 	}
@@ -456,19 +456,21 @@ public class MyModel extends MyAbstractModel {
 		pool.shutdown();
 		try {
 			if (!pool.awaitTermination(10, TimeUnit.SECONDS)) {
-				pool.shutdownNow();
+				pool.shutdown();
 				if (!pool.awaitTermination(10, TimeUnit.SECONDS)) {
-					notify = "Pool did not terminate";
+					notify = "Pool is terminate";
 					setChanged();
-					notifyObservers("server disconect");
+					notifyObservers("server disconecting");
 				}
 			} else {
 				notify = "Pool is terminate";
 				setChanged();
-				notifyObservers("server disconect");
+				notifyObservers("server disconecting");
 			}
 		} catch (InterruptedException ie) {
-			pool.shutdownNow();
+			pool.shutdown();
+			setChanged();
+			notifyObservers("server disconecting");
 		}
 	}
 		

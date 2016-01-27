@@ -28,6 +28,10 @@ public class MyClientHandler extends Observable implements ClientHandler, Serial
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	PrintWriter outToServer;
+	
+	BufferedReader incomuniction;
+	
 	Boolean closeSocket = false;
 	/** The out to client. */
 	ObjectOutputStream ToClient;
@@ -49,7 +53,7 @@ public class MyClientHandler extends Observable implements ClientHandler, Serial
 	public MyClientHandler() {
 		solutionMap = new HashMap<>();
 		pool = Executors.newFixedThreadPool(5);
-		
+		Ready = new String();
 	}
 	/*
 	 * (non-Javadoc)
@@ -61,10 +65,10 @@ public class MyClientHandler extends Observable implements ClientHandler, Serial
 	@Override
 	public void handleClient(InputStream in, OutputStream out) throws IOException, Exception {
 		
-		BufferedReader incomuniction = new BufferedReader(new InputStreamReader(in));
+		incomuniction = new BufferedReader(new InputStreamReader(in));
 		System.out.println(incomuniction.readLine().toString());
 		
-		PrintWriter outToServer = new PrintWriter(out);
+		outToServer = new PrintWriter(out);
 		outToServer.println("ok\n");
 		outToServer.flush();
 		
@@ -79,12 +83,18 @@ public class MyClientHandler extends Observable implements ClientHandler, Serial
 		sol.clear();
   // while for send the response from server
 		try {
-			while(true) {
+			while(!Ready.equals("server disconecting")) {
 				if(response == null){
 					System.out.println("tr");
 				}
 				while ((response != null) && (check)) {
-					ToClient.writeObject(response);
+					if(!close){
+						
+						ToClient.writeObject(response);
+						ToClient.flush();
+						ToClient.reset();
+					}
+					
 					if(response instanceof ArrayList<?> ){
 						for (State<Position> state : (ArrayList<State<Position>>)response) {
 							System.out.println(state.getState().toString());
@@ -93,18 +103,17 @@ public class MyClientHandler extends Observable implements ClientHandler, Serial
 					else if(response instanceof Maze3d ){
 						//System.out.println(((Maze3d)response).toString());
 					}
-					response = null;
-					check = false;
-					
-					ToClient.flush();
-					ToClient.reset();
 					FromClient.close();
 					ToClient.close();
+					response = null;
+					check = false;
 					closeSocket=true;
 					return;
+
 				}
+		}
 			
-			}
+			close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -119,23 +128,10 @@ public class MyClientHandler extends Observable implements ClientHandler, Serial
 		response = arg;
 		Ready = string;
 		check = true;
-		
-		if(arg instanceof ArrayList<?> ){
-			for (State<Position> state : (ArrayList<State<Position>>)response) {
-				System.out.println(state.getState().toString());
-			}
-		}
-		else if(arg instanceof Maze3d ){
-			//System.out.println(((Maze3d)response).toString());
-		}
-		else if((arg != null) && (Ready == "Pool is terminate")){
-			try {
+		System.out.println("get respons: check");
+		 if((arg != null) && (Ready.equals( "Pool is terminate"))){
+			 //outToServer.println("Your Wish Is My Command \n");
 				close = true;
-				close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 		
 	}
@@ -144,6 +140,8 @@ public class MyClientHandler extends Observable implements ClientHandler, Serial
 	 */
 	@Override
 	public void close() throws IOException {
+		
+		outToServer.flush();
 		FromClient.close();
 		ToClient.close();
 	}

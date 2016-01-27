@@ -496,6 +496,12 @@ public class MyModel extends MyAbstractModel {
 			toServer.writeObject(commandLine);
 			toServer.flush();
 			commandLine.clear();
+			String line;
+			while(( line = in.readLine()).equals("Your Command Is My Wish \n")){
+				System.out.println(line);
+				return;
+			}
+			System.out.println(in.readLine());
 			toServer.close();
 			fromServer.close();
 			theServer.close();

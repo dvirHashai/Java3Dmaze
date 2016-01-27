@@ -88,7 +88,7 @@ public class MyServer implements Closeable {
 										System.out.println("\thandling client " + clientsHandled);
 
 										clinetHandler.handleClient(someClient.getInputStream(),someClient.getOutputStream());
-										System.out.println("after");
+										System.out.println("my server : after clinetHandler");
 										while (true) {
 
 											if (clinetHandler.getCloseSocket()) {
@@ -143,8 +143,7 @@ public class MyServer implements Closeable {
 		@SuppressWarnings("unused")
 		boolean allTasksCompleted = false;
 		try {
-			while ((allTasksCompleted = threadpool.awaitTermination(10, TimeUnit.SECONDS)))
-				;
+			while ((allTasksCompleted = threadpool.awaitTermination(10, TimeUnit.SECONDS)));
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
