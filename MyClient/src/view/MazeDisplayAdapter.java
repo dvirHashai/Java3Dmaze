@@ -1,19 +1,28 @@
 package view;
 import java.util.Observable;
+
+import algorithms.mazeGenerator.Position;
+import algorithms.search.State;
 public class MazeDisplayAdapter extends Observable {
 	MazeDisplayer mazePainter;
 	boolean in = true;
 	Boolean winMsg = false;
 	Boolean generateBG = false;
+	
 	public MazeDisplayAdapter(MazeDisplayer mazeDisplayer) {
 		this.mazePainter = mazeDisplayer;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void setPainter(Object arg){
+		
 		mazePainter.setCanvas(arg);
+	
 		setChanged();
 		notifyObservers();
-	}
+	
+		}
+	
 	public MazeDisplayer getMazeDisplayer(){
 		return mazePainter;
 	}

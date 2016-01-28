@@ -1,6 +1,13 @@
 package view;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyListener;
@@ -32,6 +39,8 @@ public abstract class MazeDisplayer extends Canvas  {
 	Image pipeUp ;
 	Image pipeDown ;
 	
+	Clip sound;
+	boolean closeSound = false;
 	ArrayList<Image> mazePicList;
 	boolean closePaint = false;
 	ArrayList<State<Position>> solList;
@@ -122,6 +131,9 @@ public abstract class MazeDisplayer extends Canvas  {
 		}
 		System.out.println(curentPosition.toString());
 		System.out.println(maze.toString());
+		if(curentPosition.equals(goalPosition)){
+			closeSound = true;
+		}
 		/*if(closePaint){
 			Thread.currentThread().stop();
 			
@@ -170,6 +182,23 @@ public abstract class MazeDisplayer extends Canvas  {
 	public abstract void moveCharacterUpFloor();
 
 	public abstract void moveCharacterDownFloor();
+	
+	public void playSound(File file) {
+		try {
+			sound = AudioSystem.getClip();
+			AudioInputStream inputStream = AudioSystem
+					.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
+			sound.open(inputStream);
+			sound.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public boolean musicCheck(){
+		if( closeSound)
+			return true;
+		return false;
+	}
 	
 	/*public void Exit(){
 		Display.class.di

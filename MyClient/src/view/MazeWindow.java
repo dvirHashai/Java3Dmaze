@@ -44,9 +44,10 @@ public class MazeWindow extends BasicWindow {
 	ClientProperties clientProperties;
 	MessageBox messageBox;
 	Clip music;
-	Clip sound;
+	
 	MenuItem exit;
 	String mazeName;
+	int p = 0;
 	int counter = 0;
 	
 
@@ -234,7 +235,8 @@ public class MazeWindow extends BasicWindow {
 				setChanged();
 				notifyObservers();
 				commandsList.clear();
-				
+				music.stop();
+				music.close();
 				// mazePainter.getDisplay().getThread().;
 				/*
 				 * shell.getDisplay().close(); shell.dispose();
@@ -482,8 +484,10 @@ public class MazeWindow extends BasicWindow {
     }
 
 	private void playMusic(File file) {
-
+		
 		try {
+			
+			if(p%2 == 0){
 			music = AudioSystem.getClip();
 			AudioInputStream inputStream = AudioSystem
 					.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
@@ -491,24 +495,19 @@ public class MazeWindow extends BasicWindow {
 			// loop infinitely
 			music.setLoopPoints(0, -1);
 			music.loop(Clip.LOOP_CONTINUOUSLY);
-			
+			p++;
+			}
+			else{
+				music.stop();
+				p++;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	@SuppressWarnings("unused")
-	private void playSound(File file) {
-		try {
-			sound = AudioSystem.getClip();
-			AudioInputStream inputStream = AudioSystem
-					.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
-			sound.open(inputStream);
-			sound.start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	
 	public void exit(){
 		shell.close();
 		shell.dispose();

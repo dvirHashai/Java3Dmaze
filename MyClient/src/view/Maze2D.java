@@ -1,4 +1,6 @@
 package view;
+import java.io.File;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -60,7 +62,10 @@ public class Maze2D extends MazeDisplayer {
 					            
 					          if (i == goalPosition.getRows() && j == goalPosition.getColumns() && curentPosition.getDimension() == goalPosition.getDimension()){
 					        	  e.gc.drawImage(win, 0, 0, win.getBounds().width, win.getBounds().height, x, y,w,h);
-					        	  
+					          }
+					          if (i == goalPosition.getRows() && j == goalPosition.getColumns() && curentPosition.getDimension() == goalPosition.getDimension()){
+					        	  //closeSound = true;
+					        	  playSound(new File("winner.wav"));
 					        	  
 						   }
 					          
