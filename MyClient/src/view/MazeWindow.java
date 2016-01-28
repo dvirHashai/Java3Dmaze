@@ -11,6 +11,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.JOptionPane;
+import javax.swing.text.MaskFormatter;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -22,6 +23,8 @@ import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -117,7 +120,10 @@ public class MazeWindow extends BasicWindow {
 	@Override
 	void initWidgets() {
 		shell.setLayout(new GridLayout(2, false));
+		//shell.setLayout(new gr);
 		shell.setText("Game Window");
+		/*shell.setBackgroundImage(mazePainter.back);
+		shell.setLayoutData(mazePainter.back);*/
 		
 		
 		// Bar menu
@@ -297,6 +303,9 @@ public class MazeWindow extends BasicWindow {
 						commandsList.add(regex);
 						commandsList.add(generateline);
 						mazePainterAdapter.generateBG = true;
+						if(mazePainterAdapter.mazePainter.sound != null){
+							mazePainterAdapter.mazePainter.DisposMazePicList();
+						}
 						setChanged();
 						notifyObservers();
 						
@@ -323,7 +332,7 @@ public class MazeWindow extends BasicWindow {
 		});
 
 		mazePainter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,3));
-
+//mazePainter.drawBackground(GC.win32_new(mazePainter, mazePainter.back), 0, 0, shell.getSize().x, shell.getSize().y);
 		System.out.println("fffg");
 		Button solve = new Button(shell, SWT.PUSH);
 		solve.setLayoutData(new GridData(SWT.FILL, SWT.NONE, false, false, 1, 1));
@@ -437,6 +446,7 @@ public class MazeWindow extends BasicWindow {
 		});
 		// mazePainter.setMaze(maze3d);
 		shell.setSize(clientProperties.getWidthSize(), clientProperties.getHeightSize());
+		
 		shell.open();
 
 		// TODO

@@ -5,6 +5,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Composite;
 
 import algorithms.mazeGenerator.Maze3d;
@@ -27,13 +28,14 @@ public class Maze2D extends MazeDisplayer {
 	    	Image pipeUp = new Image(getDisplay(),"pipeUp.png");
 	    	Image pipeDown = new Image(getDisplay(),"pipeDown.png");*/
 	       
-			setBackgroundImage(back);
+			//setBackgroundImage(back);
 			
 			
 	    	addPaintListener(new PaintListener() {
 		
 				@Override
 				public void paintControl(PaintEvent e) {
+				
 					try {
 						if(maze!=null && curentPosition!=null &&startPosition!=null && goalPosition!=null){
 							if (curentPosition.equals(goalPosition)){
@@ -43,16 +45,20 @@ public class Maze2D extends MazeDisplayer {
 					  
 					   e.gc.setForeground(new Color(null,255,255,255));
 					   e.gc.setBackground(new Color(null,0,0,0));
+					   
 					   int width=getSize().x;
 					   int height=getSize().y;
+					   e.gc.drawImage(game, 0, 0, game.getBounds().width, game.getBounds().height, 0, 0, width, height);
+					   
 					   int w=width/maze.getMaze3d()[1][1].length;
 					   int h=height/maze.getMaze3d()[1].length;
 					   for(int i=1;i<maze.getMaze3d()[curentPosition.getDimension()][i].length-1;i++)
 					      for(int j=1;j<maze.getMaze3d()[curentPosition.getDimension()][j].length-1;j++){
 					          int x=j*w;
 					          int y=i*h;
+					         
 					          if(maze.getMaze3d()[curentPosition.getDimension()][i][j]!=0)
-					              //e.gc.fillRectangle(x,y,w,h);
+					             
 					               e.gc.drawImage(wall, 0, 0, wall.getBounds().width, wall.getBounds().height, x, y,w,h);
 					          if (i == curentPosition.getRows() && j == curentPosition.getColumns()) {
 					        	 
@@ -64,7 +70,10 @@ public class Maze2D extends MazeDisplayer {
 					        	  e.gc.drawImage(win, 0, 0, win.getBounds().width, win.getBounds().height, x, y,w,h);
 					          }
 					          if (i == goalPosition.getRows() && j == goalPosition.getColumns() && curentPosition.getDimension() == goalPosition.getDimension()){
-					        	  //closeSound = true;
+					        	  if(sound != null){
+					  				sound.stop();
+					  				sound.close();
+					  				}
 					        	  playSound(new File("winner.wav"));
 					        	  
 						   }
@@ -102,6 +111,7 @@ public class Maze2D extends MazeDisplayer {
 					      }
 					
 						}
+						//}
 					} catch (Exception e2) {
 						
 					}

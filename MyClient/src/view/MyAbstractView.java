@@ -89,6 +89,7 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 				mazeWindow.music.stop();
 				mazeWindow.music.close();
 				MazeWindow.infoBox("*****Winner*****", "You Won");
+				
 			}
 			
 			

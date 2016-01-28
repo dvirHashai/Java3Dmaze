@@ -136,7 +136,7 @@ public class MyModel extends MyAbstractModel {
 			System.out.println(commandLine.get(1).toString());
 			toServer.writeObject(commandLine);
 			toServer.flush();
-			toServer.reset();
+			
 			
 			commandLine.clear();
 			try {
@@ -148,6 +148,7 @@ public class MyModel extends MyAbstractModel {
 				setChanged();
 				notifyObservers(currentMaze);
 				
+				toServer.reset();
 				toServer.close();
 				fromServer.close();
 				theServer.close();

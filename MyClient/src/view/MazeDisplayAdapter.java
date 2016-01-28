@@ -10,10 +10,10 @@ public class MazeDisplayAdapter extends Observable {
 	Boolean generateBG = false;
 	
 	public MazeDisplayAdapter(MazeDisplayer mazeDisplayer) {
-		this.mazePainter = mazeDisplayer;
+		this.mazePainter = mazeDisplayer;	
 	}
 	
-	@SuppressWarnings("unchecked")
+
 	public void setPainter(Object arg){
 		
 		mazePainter.setCanvas(arg);
