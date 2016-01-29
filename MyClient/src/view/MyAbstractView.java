@@ -86,8 +86,10 @@ public abstract class MyAbstractView extends Observable implements View, Observe
 			mazePainterAdapter.in = true;
 			mazePainterAdapter.paintMaze();
 			if(mazePainterAdapter.mazePainter.curentPosition.equals(mazePainterAdapter.mazePainter.goalPosition)){
+				if(mazeWindow.music != null){
 				mazeWindow.music.stop();
 				mazeWindow.music.close();
+				}
 				MazeWindow.infoBox("*****Winner*****", "You Won");
 				
 			}

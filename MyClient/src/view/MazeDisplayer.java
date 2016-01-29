@@ -32,13 +32,15 @@ public abstract class MazeDisplayer extends Canvas  {
 	
 	Image back ;
 	Image charecter ;
-	Image win ;
+	Image princess ;
 	Image sol ;
-	Image finish ;
+	Image win ;
 	Image wall ;
 	Image pipeUp ;
 	Image pipeDown ;
 	Image game;
+	Image back2;
+	//Image win1;
 	
 	Clip sound;
 	boolean closeSound = false;
@@ -101,10 +103,11 @@ public abstract class MazeDisplayer extends Canvas  {
 		mazePicList = new ArrayList<>();
 		mazePicList.add(back = new Image(getDisplay(),"back1.jpg"));
 		mazePicList.add(game = new Image(getDisplay(),"game.jpg"));
+		mazePicList.add(back2 = new Image(getDisplay(),"back2.jpg"));
 		mazePicList.add(charecter = new Image(getDisplay(),"character.png"));
-		mazePicList.add(win = new Image(getDisplay(),"win.png"));
+		mazePicList.add(princess = new Image(getDisplay(),"princess.png"));
 		mazePicList.add( sol = new Image(getDisplay(),"sol.png"));
-		mazePicList.add(finish = new Image(getDisplay(),"finish.png"));
+		mazePicList.add(win = new Image(getDisplay(),"win1.jpg"));
 		mazePicList.add( wall = new Image(getDisplay(),"wall.png"));
 		mazePicList.add(pipeUp = new Image(getDisplay(),"pipeUp.png"));
 		mazePicList.add(pipeDown = new Image(getDisplay(),"pipeDown.png"));
@@ -161,6 +164,7 @@ public abstract class MazeDisplayer extends Canvas  {
 			if(sound!=null){
 			sound.stop();
 			sound.close();
+			
 			}
 			this.dispose();
 			

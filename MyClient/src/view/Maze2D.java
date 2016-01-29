@@ -37,19 +37,20 @@ public class Maze2D extends MazeDisplayer {
 				public void paintControl(PaintEvent e) {
 				
 					try {
-						if(maze!=null && curentPosition!=null &&startPosition!=null && goalPosition!=null){
-							if (curentPosition.equals(goalPosition)){
-								setBackgroundImage(finish);
-								return;
-							}
+						
 					  
 					   e.gc.setForeground(new Color(null,255,255,255));
 					   e.gc.setBackground(new Color(null,0,0,0));
 					   
 					   int width=getSize().x;
 					   int height=getSize().y;
-					   e.gc.drawImage(game, 0, 0, game.getBounds().width, game.getBounds().height, 0, 0, width, height);
-					   
+					   e.gc.drawImage(back, 0, 0, back.getBounds().width, back.getBounds().height, 0, 0, width, height);
+					   if(maze!=null && curentPosition!=null &&startPosition!=null && goalPosition!=null){
+							if (curentPosition.equals(goalPosition)){
+								 e.gc.drawImage(win, 0, 0, win.getBounds().width, win.getBounds().height, 0, 0, width, height);
+								return;
+							}
+							e.gc.drawImage(back2, 0, 0, back2.getBounds().width, back2.getBounds().height, 0, 0, width, height);
 					   int w=width/maze.getMaze3d()[1][1].length;
 					   int h=height/maze.getMaze3d()[1].length;
 					   for(int i=1;i<maze.getMaze3d()[curentPosition.getDimension()][i].length-1;i++)
@@ -67,7 +68,8 @@ public class Maze2D extends MazeDisplayer {
 								}
 					            
 					          if (i == goalPosition.getRows() && j == goalPosition.getColumns() && curentPosition.getDimension() == goalPosition.getDimension()){
-					        	  e.gc.drawImage(win, 0, 0, win.getBounds().width, win.getBounds().height, x, y,w,h);
+					        	  
+					        	  e.gc.drawImage(princess, 0, 0, princess.getBounds().width, princess.getBounds().height,  x, y, w, h);
 					          }
 					          if (i == goalPosition.getRows() && j == goalPosition.getColumns() && curentPosition.getDimension() == goalPosition.getDimension()){
 					        	  if(sound != null){
@@ -94,11 +96,11 @@ public class Maze2D extends MazeDisplayer {
 								}
 					          }*/
 					          Position floor = new Position(curentPosition.getDimension(), i, j);
-						 		if((maze.getmaze3dIndex((Position.MergerPos(floor, Position.UP)))==0)&& maze.getmaze3dIndex(curentPosition.getDimension(), i, j) == 0){
-						 			e.gc.drawImage(pipeUp, 0, 0, pipeUp.getBounds().width, pipeUp.getBounds().height, x +(2*(w/3)), y + (h/2),w/3,h/3);
+					          if((maze.getmaze3dIndex((Position.MergerPos(floor, Position.UP)))==0)&& maze.getmaze3dIndex(curentPosition.getDimension(), i, j) == 0 && (i==curentPosition.getRows()) && (j==curentPosition.getColumns()) ){
+						 			e.gc.drawImage(pipeUp, 0, 0, pipeUp.getBounds().width, pipeUp.getBounds().height, x +(2*(w/3)), y,w/3,h/3);
 								}
-								if((maze.getmaze3dIndex((Position.MergerPos(floor, Position.DOWN)))==0)&& maze.getmaze3dIndex(curentPosition.getDimension(), i, j) == 0){
-									e.gc.drawImage(pipeDown, 0, 0, pipeDown.getBounds().width, pipeDown.getBounds().height, x, y+(h/2),w/3,h/3);
+								if((maze.getmaze3dIndex((Position.MergerPos(floor, Position.DOWN)))==0)&& maze.getmaze3dIndex(curentPosition.getDimension(), i, j) == 0 && (i==curentPosition.getRows()) && (j==curentPosition.getColumns()) ){
+									e.gc.drawImage(pipeDown, 0, 0, pipeDown.getBounds().width, pipeDown.getBounds().height, x, y+(h/2)+(h/5),w/3,h/3);
 								}
 					        	
 					         
