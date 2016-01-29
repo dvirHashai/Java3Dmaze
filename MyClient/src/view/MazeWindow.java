@@ -34,6 +34,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 import presenter.ClientProperties;
 import presenter.PropertiesHandler;
@@ -210,6 +212,7 @@ public class MazeWindow extends BasicWindow {
 				FileDialog fd = new FileDialog(shell, SWT.SAVE);
 				fd.setText("Save");
 				fd.setFilterPath("");
+				fd.setFileName(mazeName);
 				String[] filterExt = { "*.maze", "*.java","*.txt" ,"*.xml" , "*.*" };
 				fd.setFilterExtensions(filterExt);
 				String selected = fd.open();
@@ -262,13 +265,27 @@ public class MazeWindow extends BasicWindow {
 		// Drop down functions for help button
 		Menu subMenu1 = new Menu(shell, SWT.DROP_DOWN);
 		helpItem.setMenu(subMenu1);
-
-		MenuItem item = new MenuItem(subMenu1, SWT.PUSH);
-		item.addListener(SWT.Selection, new Listener() {
+		
+        MenuItem about = new MenuItem(subMenu1,SWT.PUSH);
+        about.setText("About");
+        
+		
+		//item.setText("About");
+		about.addListener(SWT.Selection, new Listener() {
 
 			@Override
 			public void handleEvent(Event arg0) {
-				System.out.println("Select All");
+				Shell aboutShell = new Shell(shell, SWT.TITLE | SWT.SYSTEM_MODAL | SWT.CLOSE | SWT.MAX);
+				aboutShell.setLayout(new GridLayout(2, false));
+				aboutShell.setSize(500, 200);
+
+				aboutShell.setText("About");
+				aboutShell.setLayout(new GridLayout(2, false));
+				Text aboutText = new Text(aboutShell, SWT.NONE);
+				aboutText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+				aboutText.setText("Final project java 2016        Authors : Chen Luigi & Dvir Hashai     Lecturer : Eliahu Khlastchi ");
+				
+				aboutShell.open();
 
 			}
 		});

@@ -42,8 +42,8 @@ public class ClientProperties implements Serializable {
 	public ClientProperties() {
 		clientPort = 3333;
 		clientIp = "127.0.0.1";
-		widthSize = 1300;
-		heightSize = 800;
+		widthSize =675;
+		heightSize = 550;
 		numOfThreads = 5;
 
 	}
