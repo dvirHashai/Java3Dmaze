@@ -1,18 +1,13 @@
 package view;
-import java.util.ArrayList;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 
 import algorithms.mazeGenerator.Maze3d;
 import algorithms.mazeGenerator.Position;
-import algorithms.search.State;
 public class Maze2D extends MazeDisplayer {
 	
 	 public Maze2D(Composite parent,int style){
@@ -25,7 +20,7 @@ public class Maze2D extends MazeDisplayer {
 	    	Image back = new Image(getDisplay(),"back1.jpg");
 	    	Image charecter = new Image(getDisplay(),"character.png");
 	    	Image win = new Image(getDisplay(),"win.png");
-	    	Image sol = new Image(getDisplay(),"sol.png");
+	    	//Image sol = new Image(getDisplay(),"sol.png");
 	    	Image finish = new Image(getDisplay(),"finish.png");
 	    	Image wall = new Image(getDisplay(),"wall.png");
 	    	Image pipeUp = new Image(getDisplay(),"pipeUp.png");

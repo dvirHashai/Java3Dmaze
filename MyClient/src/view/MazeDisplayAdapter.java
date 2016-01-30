@@ -1,8 +1,5 @@
 package view;
 import java.util.Observable;
-
-import algorithms.mazeGenerator.Position;
-import algorithms.search.State;
 public class MazeDisplayAdapter extends Observable {
 	MazeDisplayer mazePainter;
 	boolean in = true;
@@ -33,8 +30,8 @@ public class MazeDisplayAdapter extends Observable {
 			@Override
 			public void run() {
 				if(generateBG){
+					//mazePainter.DisposMazePicList();
 					mazePainter.setBackgroundImage(mazePainter.back);
-					
 				}
 				if (in) {
 					mazePainter.redraw();

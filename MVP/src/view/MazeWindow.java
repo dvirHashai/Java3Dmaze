@@ -388,6 +388,7 @@ public class MazeWindow extends BasicWindow {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void playSound(File file) {
 		try {
 			sound = AudioSystem.getClip();

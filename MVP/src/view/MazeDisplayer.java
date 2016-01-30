@@ -1,14 +1,11 @@
 package view;
 
-import java.awt.Toolkit;
 import java.util.ArrayList;
 
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 
 import algorithms.mazeGenerator.Maze3d;
 import algorithms.mazeGenerator.Position;

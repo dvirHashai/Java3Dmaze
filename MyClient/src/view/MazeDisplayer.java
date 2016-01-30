@@ -118,6 +118,7 @@ public abstract class MazeDisplayer extends Canvas  {
 	}
 
 	public void setCanvas(Object arg){
+	
 		System.out.println("fff");
 		if(arg.getClass() == Maze3d.class){
 		this.maze = (Maze3d)arg;
