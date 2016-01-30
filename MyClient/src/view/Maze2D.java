@@ -66,11 +66,11 @@ public class Maze2D extends MazeDisplayer {
 					        	
 								}
 					            
-					          if (i == goalPosition.getRows() && j == goalPosition.getColumns() && curentPosition.getDimension() == goalPosition.getDimension()){
+					          if (i == goalPosition.getRows() && j == goalPosition.getColumns() && (curentPosition.getDimension() == goalPosition.getDimension())){
 					        	  
 					        	  e.gc.drawImage(princess, 0, 0, princess.getBounds().width, princess.getBounds().height,  x, y, w, h);
 					          }
-					          if (i == goalPosition.getRows() && j == goalPosition.getColumns() && curentPosition.getDimension() == goalPosition.getDimension()){
+					          if (i == goalPosition.getRows() && j == goalPosition.getColumns() && (curentPosition.getDimension() == goalPosition.getDimension())){
 					        	  if(sound != null){
 					  				sound.stop();
 					  				sound.close();
